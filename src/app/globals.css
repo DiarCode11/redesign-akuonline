@@ -8,6 +8,15 @@
   color: #F25555;
 }
 
+.primary-border {
+  border-color: #F25555;
+}
+
 body {
   font-family: 'Poppins', sans-serif; /* atau Montserrat, Figtree */
+}
+
+#nprogress .bar {
+  background: #3b82f6; /* Tailwind primary blue */
+  height: 3px;
 }

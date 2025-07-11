@@ -1,0 +1,58 @@
+import { useState } from "react";
+import { ChangeEvent } from "react";
+
+
+export enum DataType {
+    Text = "text",
+    Number = "number"
+}
+
+type InputComponentProps = {
+    name: string,
+    placeholder: string,
+    keyname: string,
+    dataType?: DataType,
+    errorMsg?: string,
+    onChange: (value: string) => void
+}
+
+export default function InputComponent({name, placeholder, keyname, dataType, errorMsg, onChange} : InputComponentProps) {
+    const [value, setValue] = useState<string>('');
+    const [type, setType] = useState<string>('');
+
+    function handleChange(e: ChangeEvent<HTMLInputElement>) {
+        const newVal = e.target.value;
+        if (dataType === DataType.Text) {
+            setType("text");
+            setValue(newVal);
+            onChange(newVal);
+        } else if (dataType === DataType.Number) {
+            setType("text");
+            if (/^\d*$/.test(newVal)) {
+                setValue(newVal);
+                onChange(newVal);
+            }
+        } else {
+            setType(dataType);
+            setValue(newVal);
+            onChange(newVal);
+        }
+    }
+
+    return (
+        <div className="w-full">
+            <label htmlFor={keyname} className="block font-medium text-gray-700">
+                {name}
+            </label>
+            <input
+                type={type}
+                id={keyname}
+                value={value}
+                placeholder={placeholder}
+                onChange={handleChange}
+                className="mt-1 p-2 w-full h-7 border border-gray-300 text-sm rounded-md"
+            />
+            { errorMsg && (<p className="text-red-500 text-sm">{errorMsg}</p>) }
+        </div>
+    )
+}

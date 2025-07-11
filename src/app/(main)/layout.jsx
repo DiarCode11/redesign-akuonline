@@ -7,7 +7,7 @@ export default function RootLayout({ children }) {
       <nav className="bg-white h-20 shadow-lg flex justify-between items-center px-4 fixed top-0 left-0 z-10 w-full">
         <div className="font-bold text-xl flex items-center">
           <Image
-            src={"IconNavbar.svg"}
+            src={"/IconNavbar.svg"}
             alt="Logo"
             width={40}
             height={40}
@@ -18,14 +18,14 @@ export default function RootLayout({ children }) {
         </div>
         <div>
           <Image
-              src={"ProfileIcon.svg"}
+              src={"/ProfileIcon.svg"}
               alt="Profile Icon"
               width={40}
               height={40}
             />
         </div>
       </nav>
-      <main className="bg-neutral-100 pt-28 h-full z-0">
+      <main className="bg-slate-200 pt-28 min-h-full z-0">
         {children}
       </main>
     </>
