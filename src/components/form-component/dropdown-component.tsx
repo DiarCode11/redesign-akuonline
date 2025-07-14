@@ -36,15 +36,15 @@ export default function DropdownComponent({ label, data, defaultDataIndex, place
 
     return (
         <div>
-            <label htmlFor="name" className="block font-medium text-gray-700">
+            <label htmlFor="name" className="block font-medium text-sm">
                 {label}
             </label>
-            <div ref={dropdownRef} onClick={() => setShowDropdown(!showDropdown)} className={`relative w-full h-7 border mt-1 text-sm flex pl-2 items-center border-gray-300 rounded-md ${item ? "text-black" : "text-gray-400"}`}>
+            <div ref={dropdownRef} onClick={() => setShowDropdown(!showDropdown)} className={`relative w-full h-9 border mt-1 text-sm flex pl-2 items-center border-gray-300 rounded-md ${item ? "text-black" : "text-gray-400"}`}>
                 {item ? item : (defaultDataIndex ? data[defaultDataIndex]: placeholder)}
                 <ChevronDown className={`absolute right-2 text-gray-400 transition-transform duration-300 ${showDropdown ? "rotate-180" : "rotate-0"}`} size={18} />
                 { showDropdown &&  
-                    <div className="h-32 w-full z-10 absolute shadow border border-neutral-500 rounded-md left-0 top-10 bg-white text-gray-400">
-                        <ul className="overflow-y-scroll h-full">
+                    <div className="max-h-32 overflow-y-auto w-full z-10 absolute shadow border border-neutral-500 rounded-md left-0 top-10 bg-white text-gray-400">
+                        <ul className="h-full">
                             {data.map((item, index) => (
                                 <li onClick={() => selectItem(item)} className="py-1 px-2 cursor-pointer rounded-md hover:bg-gray-100 text-gray-400" key={index}>{item}</li>
                             ))}

@@ -11,13 +11,14 @@ type InputComponentProps = {
     name: string,
     placeholder: string,
     keyname: string,
-    dataType?: DataType,
+    dataType?: DataType | string,
     errorMsg?: string,
+    defaultValue?: string,
     onChange: (value: string) => void
 }
 
-export default function InputComponent({name, placeholder, keyname, dataType, errorMsg, onChange} : InputComponentProps) {
-    const [value, setValue] = useState<string>('');
+export default function InputComponent({name, placeholder, keyname, dataType, errorMsg, defaultValue='', onChange} : InputComponentProps) {
+    const [value, setValue] = useState<string>(defaultValue);
     const [type, setType] = useState<string>('');
 
     function handleChange(e: ChangeEvent<HTMLInputElement>) {
@@ -41,7 +42,7 @@ export default function InputComponent({name, placeholder, keyname, dataType, er
 
     return (
         <div className="w-full">
-            <label htmlFor={keyname} className="block font-medium text-gray-700">
+            <label htmlFor={keyname} className="block text-sm font-medium">
                 {name}
             </label>
             <input
@@ -50,7 +51,7 @@ export default function InputComponent({name, placeholder, keyname, dataType, er
                 value={value}
                 placeholder={placeholder}
                 onChange={handleChange}
-                className="mt-1 p-2 w-full h-7 border border-gray-300 text-sm rounded-md"
+                className="mt-1 p-2 w-full h-9 border border-gray-300 text-sm rounded-md"
             />
             { errorMsg && (<p className="text-red-500 text-sm">{errorMsg}</p>) }
         </div>

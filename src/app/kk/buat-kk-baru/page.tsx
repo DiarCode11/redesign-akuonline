@@ -1,28 +1,67 @@
 "use client";
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { ArrowLeft, Check, ChevronDown, Download, Pencil, SquarePen, Trash2 } from "lucide-react";
 import Accordion from "@/components/accordion";
 import { VILLAGE_DATA } from "@/lib/config";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Modal from "@/components/modal";
 import Link from "next/link";
-import { Trash2, Pencil } from "lucide-react";
-import AddFamilyForm from "@/components/kk-component/add_family_form";
+import DataPribadiSection from "@/components/kk-component/add-data-section/data-pribadi";
 import InputComponent from "@/components/form-component/input-component";
 import RadioComponent from "@/components/form-component/radio-component";
 import DropdownComponent from "@/components/form-component/dropdown-component";
 import { DataType } from "@/components/form-component/input-component";
+import DokumenIdentitasSection from "@/components/kk-component/add-data-section/dokumen-identitas";
+import DataPerkawinanSection from "@/components/kk-component/add-data-section/data-perkawinan";
+import KondisiKhususSection from "@/components/kk-component/add-data-section/kondisi-khusus";
+import DataOrangtuaSection from "@/components/kk-component/add-data-section/data-orangtua";
+import { DataPribadiProps } from "@/components/kk-component/add-data-section/data-pribadi";
+import { DokumenIdentitasType } from "@/components/kk-component/add-data-section/dokumen-identitas";
+import { DataPerkawinanProps } from "@/components/kk-component/add-data-section/data-perkawinan";
+import { KondisiKhususProps } from "@/components/kk-component/add-data-section/kondisi-khusus";
+import { DataOrangtuaProps } from "@/components/kk-component/add-data-section/data-orangtua";
+import FileInput from "@/components/form-component/fileinput-component";
+
+type dataKKProps = {
+    jenis_data: string,
+    kecamatan: string,
+    desa: string,
+    dusun: string,
+    kode_pos: string,
+    diwakilkan: boolean | null,
+    nama_perwakilan?: string,
+    nik_perwakilan?: string
+}
+
+type formDataProps = DataPribadiProps & DokumenIdentitasType & DataPerkawinanProps & KondisiKhususProps & DataOrangtuaProps
 
 export default function NewKK() {
-    const [familyData, setFamilyData] = useState([]);
+    const [familyData, setFamilyData] = useState<Partial<dataKKProps>>({});
+    const [formData, setFormData] = useState<Partial<formDataProps>>({})
     const [accordionActive, setAccordionActive] = useState<number>(1);
-    const [isAddDataModalOpen, setIsAddDataModalOpen] = useState(false);
+    const [currentStep, setCurrentStep] = useState<number>(1);
+    const [dataKKList, setDataKKList] = useState<Partial<formDataProps>[]>([]);
+    const [isAddDataModalOpen, setIsAddDataModalOpen] = useState<boolean>(false);
     const [villages, setVillages] = useState<string[]>([]);
+    const [isAllDocDownloaded, setAllDocDownloaded] = useState<boolean>(false);
 
     function submitData() {
         setAccordionActive(2);
         setIsAddDataModalOpen(false);
+    }
+
+    function saveData() {
+        const updatedList = [...dataKKList, formData];
+        setDataKKList(updatedList);
+        sessionStorage.setItem('newDataKK', JSON.stringify(updatedList));
+        setFormData({});
+        setIsAddDataModalOpen(false);
+    }
+
+    function nextToStep(value: number) {
+        setCurrentStep(Math.max(accordionActive, value));
+        setAccordionActive(value);
     }
 
     function getVillageList(subdistrict: string) {
@@ -34,10 +73,110 @@ export default function NewKK() {
         setIsAddDataModalOpen(true);
     }
 
+    const handleCallback = useCallback((data: Partial<formDataProps>) => {
+        setFormData(prev => ({
+            ...prev,
+            ...data
+        }))
+    }, [])
+
+    function isAddFormComplete() {
+        const basicValid: boolean = !!(formData.nama_lengkap &&
+            formData.hubungan_keluarga &&
+            formData.jenis_kelamin &&
+            formData.golongan_darah &&
+            formData.tempat_lahir &&
+            formData.tanggal_lahir &&
+            formData.agama &&
+            formData.kewarganegaraan && 
+            formData.pendidikan_terakhir &&
+            formData.pekerjaan &&
+            formData.no_akta_lahir &&
+            formData.status_perkawinan &&
+            formData.disabilitas &&
+            formData.kelainan &&
+            formData.nama_ayah && 
+            formData.nik_ayah &&
+            formData.nama_ibu && 
+            formData.nik_ibu)
+
+        if (formData.kewarganegaraan === 'WNA') {
+            return !!(basicValid &&
+                formData.no_paspor &&
+                formData.tgl_akhir_paspor &&
+                formData.tipe_sponsor &&
+                formData.nama_sponsor &&
+                formData.alamat_sponsor && 
+                formData.dokumen_ijin_tinggal &&
+                formData.no_kitas_kitap &&
+                formData.tmp_terbit_kitas_kitap &&
+                formData.tgl_terbit_kitas_kitap &&
+                formData.tgl_akhir_kitas_kitap &&
+                formData.tmp_datang_pertama &&
+                formData.tgl_datang_pertama)
+        }
+
+        return basicValid;
+    }
+
+    const buatFormulirValid = () => {
+        const { jenis_data, kecamatan, desa, dusun, kode_pos, diwakilkan, nama_perwakilan, nik_perwakilan } = familyData;
+
+        const basicValid =
+            jenis_data !== "" &&
+            kecamatan !== "" &&
+            desa !== "" &&
+            dusun!== "" &&
+            kode_pos !== "" &&
+            diwakilkan !== null;
+
+        if (diwakilkan === true) {
+            return (
+                basicValid &&
+                nama_perwakilan !== "" &&
+                nik_perwakilan !== ""
+            );
+        }
+
+        return basicValid;
+    };
+
+
+    useEffect(() => {
+        console.log("Accordion aktif saat ini: ", accordionActive);
+        console.log("Stage saat ini: ", currentStep);
+    }, [accordionActive, currentStep])
+
+    useEffect(() => {
+        console.log("Isi terbaru dari familyData:", familyData);
+    }, [familyData]);
+
+    useEffect(() => {
+        console.log(formData)
+    }, [formData])
+
+
     return (
         <div>
             <Modal title={"Tambah Data Anggota Keluarga"} isOpen={isAddDataModalOpen} onClose={() => setIsAddDataModalOpen(false)}>
-                <AddFamilyForm onClose={submitData} onSubmit={() => {} } />
+                <div className="sm:px-3 px-2">
+                    {/* Section data pribadi */}
+                    <DataPribadiSection onChange={handleCallback} />
+                    <div className="w-full border-gray-400 my-7 border"></div>
+                    <DokumenIdentitasSection isWNA={formData.kewarganegaraan === 'WNA'} onChange={handleCallback}/>
+                    <div className="w-full border-gray-400 my-7 border"></div>
+                    <DataPerkawinanSection onChange={handleCallback} />
+                    <div className="w-full border-gray-400 my-7 border"></div>
+                    <KondisiKhususSection onChange={handleCallback}/>
+                    <div className="w-full border-gray-400 my-7 border"></div>
+                    <DataOrangtuaSection onChange={handleCallback} />
+                    <div className="flex justify-end pt-5">
+                        {/* disabled={!buatFormulirValid()} nanti tambahkan disini */}
+                        <Button disabled={!isAddFormComplete()} onClick={() => saveData()} variant="primary" size={"md"} className={"bg-sky-600 text-white px-4 py-2"}>
+                            Simpan
+                        </Button>
+                    </div>
+                </div>
             </Modal>
             <div className="flex space-x-6 items-center pb-10">
                 <Link href={"/"}>
@@ -46,84 +185,232 @@ export default function NewKK() {
                 <h1 className="font-semibold text-xl t">Buat Kartu Keluarga</h1>
             </div>
             <div className="flex flex-col space-y-2">
-                <Accordion title={"Buat Formulir"} number={1} isOpen={accordionActive === 1} onToggle={(data) => setAccordionActive(data ? 1 : null)}>
+                <Accordion 
+                    title={"Buat Formulir"} 
+                    number={1} 
+                    active={currentStep >= 1 } 
+                    isOpen={accordionActive === 1} 
+                    onToggle={(isOpen) => {
+                        if (1 <= currentStep) {
+                            setAccordionActive(isOpen ? 1 : 0);
+                        }
+                    }}
+                >
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div className="sm:col-span-2">
                             <RadioComponent 
                                 name={"Jenis Data Keluarga"} 
-                                cols="md:grid-cols-3" 
+                                cols={"md:grid-cols-3"} 
                                 item={['WNI Dalam Negeri', 'WNA Dalam Negeri', 'WNI Luar Negeri']} 
-                                defaultItem={'WNI Dalam Negeri'}
-                                onChange={() => {}} 
+                                onChange={(data) => setFamilyData(prev => ({
+                                    ...prev, jenis_data: data
+                                }))} 
                             />
                         </div>
                         <DropdownComponent
                             data={Object.keys(VILLAGE_DATA)}
                             label="Kecamatan"
                             placeholder="Pilih kecamatan"
-                            onChange={(data) => getVillageList(data)}
+                            onChange={(data) => {
+                                getVillageList(data);
+                                setFamilyData(prev => ({
+                                    ...prev, kecamatan: data
+                                }))
+                            }}
                             />
                         <DropdownComponent
                             data={villages}
                             label="Desa"
                             placeholder="Pilih desa"
-                            onChange={(data) => {console.log(data)}}
+                            onChange={(data) => {
+                                setFamilyData(prev => ({
+                                    ...prev, desa: data
+                                }))
+                            }}
                             />
                         <InputComponent 
                             name={"Dusun"} 
                             dataType={DataType.Text} 
                             keyname={"dusun"} 
                             placeholder={"Masukkan nama dusun"} 
-                            onChange={() => {}} 
+                            onChange={(data) => {
+                                setFamilyData(prev => ({
+                                    ...prev, dusun: data
+                                }))
+                            }}
                         />
                         <InputComponent 
                             name={"Kode Pos"} 
                             dataType={DataType.Number} 
                             keyname={"kode_pos"} 
                             placeholder={"Masukkan kode pos"} 
-                            onChange={() => {}} 
+                            onChange={(data) => {
+                                setFamilyData(prev => ({
+                                    ...prev, kode_pos: data
+                                }))
+                            }} 
                         />
                         <div className="sm:col-span-2">
                             <RadioComponent 
                                 name={"Apakah pembuatan data ini diwakilkan oleh orang lain?"} 
                                 cols="md:grid-cols-2" 
                                 item={['Ya', 'Tidak']} 
-                                onChange={() => {}} 
+                                onChange={(data) => {
+                                    console.log(data)
+                                    if (data == 'Ya') {
+                                        setFamilyData(prev => ({
+                                            ...prev, diwakilkan: true
+                                        }));
+                                    } else {
+                                        setFamilyData(prev => ({
+                                            ...prev, 
+                                            diwakilkan: false, 
+                                            nama_perwakilan: '',
+                                            nik_perwakilan: ''
+                                        }));
+                                    }
+                                }} 
                             />
                         </div>
+                        { familyData.diwakilkan && (
+                            <>
+                                <InputComponent 
+                                    name={"Nama Perwakilan"} 
+                                    dataType={DataType.Text} 
+                                    keyname={"nama_perwakilan"} 
+                                    placeholder={"Masukkan nama perwakilan"} 
+                                    onChange={(data) => {
+                                        setFamilyData(prev => ({
+                                            ...prev, nama_perwakilan: data
+                                        }))
+                                    }} 
+                                />
+                                <InputComponent 
+                                    name={"NIK Perwakilan"} 
+                                    dataType={DataType.Number} 
+                                    keyname={"nik_perwakilan"} 
+                                    placeholder={"Masukkan NIK"} 
+                                    onChange={(data) => {
+                                        setFamilyData(prev => ({
+                                            ...prev, nik_perwakilan: data
+                                        }))
+                                    }} 
+                                />
+                            </>
+                        ) }
                     </div>
                     <div className="flex justify-end pt-5">
-                        <Button onClick={() => setAccordionActive(2)} variant="primary" size={"md"} className={"primary-color text-white px-4 py-2"}>
+                        {/* disabled={!buatFormulirValid()} nanti tambahkan disini */}
+                        <Button onClick={() => nextToStep(2)} variant="primary" size={"md"} className={"bg-sky-600 text-white px-4 py-2"}>
                             Lanjut
                         </Button>
                     </div>
                 </Accordion>
-                <Accordion title={"Buat Data Keluarga"} number={2} isOpen={accordionActive === 2} onToggle={(data) => setAccordionActive(data ? 2 : null)}>
-                    { familyData.length !== 0 && familyData.map((item, index) => (
+                <Accordion 
+                    title={"Buat Data Keluarga"} 
+                    number={2} 
+                    active={currentStep >= 2} 
+                    isOpen={accordionActive === 2} 
+                    onToggle={(isOpen) => {
+                        if (2 <= currentStep) {
+                            setAccordionActive(isOpen ? 2 : 0);
+                        }
+                    }}
+                >
+                    <p className="py-4 text-sm text-gray-400">Tambahkan data anggota keluarga secara lengkap</p>
+                    { dataKKList.length !== 0 && dataKKList.map((item, index) => (
                         <div key={index} className="py-2 border-b border-gray-300 justify-between flex items-center">
                             <div>
-                                { item.name } 
+                                { item.nama_lengkap} 
                             </div>
                             <div className="flex gap-3">
                                 <Trash2 className="text-black" />
-                                <Pencil className="text-black" />
+                                <SquarePen className="text-black" />
                             </div>
                         </div>
                     )) }
-                    <div className="flex justify-center pt-8">
-                        <button onClick={openAddDataModal} className="flex gap-2 hover:gap-4 transition-all duration-500 ease-in-out items-center cursor-pointer ">
-                            <Plus size={18}/>
-                            <span>Tambah data baru</span>
+                    <div className={`flex pt-8 ${ dataKKList.length > 0 ? 'justify-between' : 'justify-center' }`}>
+                        <button onClick={() => setIsAddDataModalOpen(true)} className="flex gap-2 transition-all duration-500 ease-in-out items-center cursor-pointer border-2 border-sky-600 px-4 py-2 rounded-md text-sky-600 font-semibold sm:text-base text-sm">
+                            <span>Tambah data</span>
                         </button>
-                    </div>
-                    <div className="flex justify-end pt-5">
-                        <Button variant={"default"} size={"md"} className={"bg-gray-200 text-white"}>
-                            Lanjut
-                        </Button>
+                        { dataKKList.length > 0 &&
+                            <button onClick={() => nextToStep(3)} className="flex gap-2 transition-all duration-500 ease-in-out items-center cursor-pointer bg-sky-600 px-4 py-2 rounded-md text-white sm:text-base text-sm">
+                                <span>Lanjut</span>
+                            </button>
+                        }
                     </div>
                 </Accordion>
+                <Accordion
+                    title={"Download Formulir"} 
+                    number={3} 
+                    active={currentStep >= 3} 
+                    isOpen={accordionActive === 3} 
+                    onToggle={(isOpen) => {
+                        if (3 <= currentStep) {
+                            setAccordionActive(isOpen ? 3 : 0);
+                        }
+                    }}
+                >
+                    <div>
+                        <h3 className="text-sm py-4 text-gray-400">Unduh Formulir ini dan lakukan pengisian tandatangan/materai</h3>
+                        <div className="flex flex-col space-y-1">
+                            <span className="flex items-center space-x-2">
+                                {isAllDocDownloaded ? (<Check size={18} />) : (<Download size={18} />)}
+                                <p>Formulir Isian KK</p>
+                            </span>
+                            <span className="flex items-center space-x-2">
+                                {isAllDocDownloaded ? (<Check size={18} />) : (<Download size={18} />)}
+                                <p>Pendaftaran Peristiwa Kependudukan</p>
+                            </span>
+                            <span className="flex items-center space-x-2">
+                                {isAllDocDownloaded ? (<Check size={18} />) : (<Download size={18} />)}
+                                <p>Pernyataan Perubahan Elemen</p>
+                            </span>
+                        </div>
+                        <div className="pt-4 flex justify-end">
+                            <button 
+                                onClick={() => {
+                                    if (isAllDocDownloaded) {
+                                        nextToStep(4);
+                                    } else {
+                                        setAllDocDownloaded(true);
+                                    }   
+                                }} 
+                                className="flex gap-2 transition-all duration-500 ease-in-out items-center cursor-pointer bg-sky-600 px-4 py-2 rounded-md text-white sm:text-base text-sm"
+                            >
+                                <span>{isAllDocDownloaded ? 'Lanjut' : 'Download semua'}</span>
+                            </button>
+                        </div>
+                    </div>
+                </Accordion>
+                <Accordion
+                    title={"Upload Formulir"} 
+                    number={4} 
+                    active={currentStep >= 4} 
+                    isOpen={accordionActive === 4} 
+                    onToggle={(isOpen) => {
+                        if (4 <= currentStep) {
+                            setAccordionActive(isOpen ? 4 : 0);
+                        }
+                    }}
+                >
+                    <>
+                        <h3 className="text-sm py-4 text-gray-400">Lakukan upload file yang sudah diisi tandatangan/materai</h3>
+                        <div className="flex flex-col space-y-3">
+                            <FileInput onChange={() => {}} id="form_isian_kk" label="Formulir Isian KK" />
+                            <FileInput onChange={() => {}} id="pendaftaran_peristiwa" label="Pendaftaran Peristiwa Kependudukan" />
+                            <FileInput onChange={() => {}} id="perubahan_elemen" label="Pernyataan Perubahan Elemen" />
+                        </div>
+                        <div className="pt-10 flex justify-end">
+                            <Link href={"/"}>
+                                <button onClick={() => nextToStep(3)} className="flex gap-2 transition-all duration-500 ease-in-out items-center cursor-pointer bg-sky-600 px-4 py-2 rounded-md text-white sm:text-base text-sm">
+                                    <span>Simpan</span>
+                                </button>
+                            </Link>
+                        </div>
+                    </>
+                </Accordion>
             </div>
-
         </div>
     );
 }

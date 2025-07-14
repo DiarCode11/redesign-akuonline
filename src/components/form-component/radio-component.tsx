@@ -19,8 +19,8 @@ export default function RadioComponent({name, item, defaultItem, cols, errorMsg,
     } 
     return (
         <div className="w-full">
-            <p className="pt-4">{name}</p>
-            <div className={`grid ${cols} grid-cols-1 pt-1`}>
+            <p className="text-sm font-medium">{name}</p>
+            <div className={`grid ${cols} grid-cols-1  pt-2`}>
                 {item.map((data, index) => (
                     <div className="flex gap-3" key={index}>
                         <input type="radio" name={data} id={data} onChange={handleChange} value={data} checked={activeItem == data} />
