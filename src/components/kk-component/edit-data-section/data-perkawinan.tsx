@@ -13,10 +13,11 @@ export type DataPerkawinanProps = {
 
 type DataPerkawinanType = {
     title : string
+    addMode : boolean
     onChange: (value: Partial<DataPerkawinanProps>) => void
 }
 
-export default function DataPerkawinanSection({ title, onChange } : DataPerkawinanType) {
+export default function DataPerkawinanSection({ title, addMode = false, onChange } : DataPerkawinanType) {
     const [dataPerkawinan, setDataPerkawinan] = useState<Partial<DataPerkawinanProps>>({})
 
     useEffect(() => {
@@ -31,6 +32,7 @@ export default function DataPerkawinanSection({ title, onChange } : DataPerkawin
                 <DropdownComponent
                     data={['Belum/Tidak kawin', 'Kawin', 'Cerai Hidup', 'Cerai Mati']}
                     label="Status Perkawinan"
+                    defaultData={addMode ? "" : "Kawin"}
                     onChange={(data) => {setDataPerkawinan(prev => ({
                         ...prev, status_perkawinan: data
                     }))}}

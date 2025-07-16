@@ -161,15 +161,15 @@ export default function NewKK() {
             <Modal title={"Tambah Data Anggota Keluarga"} isOpen={isAddDataModalOpen} onClose={() => setIsAddDataModalOpen(false)}>
                 <div className="sm:px-3 px-2">
                     {/* Section data pribadi */}
-                    <DataPribadiSection onChange={handleCallback} />
+                    <DataPribadiSection title="A. Data Pribadi" onChange={handleCallback} />
                     <div className="w-full border-gray-400 my-7 border"></div>
-                    <DokumenIdentitasSection isWNA={formData.kewarganegaraan === 'WNA'} onChange={handleCallback}/>
+                    <DokumenIdentitasSection addMode={isAddDataModalOpen} title="B. Dokumen Identitas" isWNA={formData.kewarganegaraan === 'WNA'} onChange={handleCallback}/>
                     <div className="w-full border-gray-400 my-7 border"></div>
-                    <DataPerkawinanSection onChange={handleCallback} />
+                    <DataPerkawinanSection title="C. Data Perkawinan" onChange={handleCallback} />
                     <div className="w-full border-gray-400 my-7 border"></div>
-                    <KondisiKhususSection onChange={handleCallback}/>
+                    <KondisiKhususSection title="D. Kondisi Khusus" onChange={handleCallback}/>
                     <div className="w-full border-gray-400 my-7 border"></div>
-                    <DataOrangtuaSection onChange={handleCallback} />
+                    <DataOrangtuaSection title="E. Data Orang Tua" onChange={handleCallback} />
                     <div className="flex justify-end pt-5">
                         {/* disabled={!buatFormulirValid()} nanti tambahkan disini */}
                         <Button disabled={!isAddFormComplete()} onClick={() => saveData()} variant="primary" size={"md"} className={"bg-sky-600 text-white px-4 py-2"}>
@@ -301,7 +301,7 @@ export default function NewKK() {
                     </div>
                     <div className="flex justify-end pt-5">
                         {/* disabled={!buatFormulirValid()} nanti tambahkan disini */}
-                        <Button onClick={() => nextToStep(2)} variant="primary" size={"md"} className={"bg-sky-600 text-white px-4 py-2"}>
+                        <Button onClick={() => nextToStep(2)} disabled={!buatFormulirValid()} variant="primary" size={"md"} className={"bg-sky-600 text-white px-4 py-2"}>
                             Lanjut
                         </Button>
                     </div>

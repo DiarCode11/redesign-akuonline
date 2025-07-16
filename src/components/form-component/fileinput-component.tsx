@@ -17,16 +17,16 @@ export default function FileInput({ label='', id, onChange } : FileInputProps) {
     return (
         <>
             <div className="">
-                <h2>{label}</h2>
+                <h2 className="sm:text-base text-sm pb-1">{label}</h2>
                 <div className="flex space-x-3">
-                    <div className="flex-1 border px-3 py-2 text-sm text-gray-700 bg-white rounded-md">
+                    <div className="flex-1 border px-3 py-2 text-sm text-gray-700 bg-white rounded-md select-none truncate">
                         {selectedFileName || "Tidak ada file dipilih"}
                     </div>
                     <label
                         htmlFor="fileUpload"
                         className="cursor-pointer border-2 border-sky-600 hover:bg-sky-600 hover:text-white text-sky-600 font-medium text-sm px-4 py-2 rounded-md"
                     >
-                        Browse File
+                        Browse
                     </label>
                 </div>
                 <input

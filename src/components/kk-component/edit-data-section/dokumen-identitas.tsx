@@ -30,7 +30,7 @@ type DokumenIdentitasProps = {
     onChange : (value: Partial<DokumenIdentitasType>) => void 
 }
 
-export default function DokumenIdentitasSection({ title, isWNA = false, onChange} : DokumenIdentitasProps) {
+export default function DokumenIdentitasSection({ title, isWNA = false, addMode = false, onChange} : DokumenIdentitasProps) {
     const [dokumenIdentitas, setDokumenIdentitas] = useState<Partial<DokumenIdentitasType>>({});
 
     useEffect(() => {
@@ -45,6 +45,7 @@ export default function DokumenIdentitasSection({ title, isWNA = false, onChange
                 <InputComponent
                     keyname="no_akta_lahir"
                     name="Nomor Akta Lahir"
+                    defaultValue={addMode ? "" : "123456789"}
                     dataType={DataType.Text}
                     placeholder="Masukkan nomor akta"
                     onChange={(data) => {
@@ -57,7 +58,9 @@ export default function DokumenIdentitasSection({ title, isWNA = false, onChange
                     <RadioComponent
                         cols="grid-cols-2"
                         item={['Ada', 'Tidak ada']}
+                        defaultItem={addMode ? "" : "Tidak ada"}
                         name="Punya paspor?"
+                        
                         onChange={(data) => {
                             let data_doc = (data === 'Ada')
                             setDokumenIdentitas(prev => ({

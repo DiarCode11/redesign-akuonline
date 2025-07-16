@@ -1,9 +1,10 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "@/components/modal";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const menus = [
   {
@@ -176,7 +177,7 @@ const akta_menus = [
   },
 ]
 
-export default function Home() {
+export default function ServicesComponent() {
   const [openedModal, setOpenModal] = useState(null);
 
   return (
@@ -188,7 +189,7 @@ export default function Home() {
         title="Kartu Keluarga"
         width="w-[700px]" // Bisa disesuaikan
       >
-        <div className="grid grid-cols-4 gap-x-10 gap-y-16 px-10 py-6">
+        <div className="grid sm:grid-cols-4 grid-cols-2 gap-x-10 gap-y-7 px-10 py-6">
           {KK_menus.map((menu, index) => (
             <Link href={menu.link} key={index}>
               <div className="flex justify-center items-center h-[110px] border-3 rounded-2xl" style={{ borderColor: menu.color }}>
@@ -253,11 +254,6 @@ export default function Home() {
         </div>
       </Modal>
 
-      <div className="md:flex pl-4 ">
-        <h1 className="md:text-2xl text-base font-semibold">Selamat Datang,</h1>
-        <h1 className="md:pl-3 font-semibold text-2xl text-sky-600">I Wayan Yoga Sastrawan</h1>
-      </div>
-      <p className="pl-4 pb-10 text-slate-400">Selalu jaga kerahasiaan NIK dan Password anda</p>
       <div className="h-full rounded-t-[50px] bg-white py-10 md:px-16 px-5">
         <h1 className="md:text-2xl text-lg font-semibold w-full text-center pb-10 text-black/45">Pilih Layanan Kependudukan</h1>
         <div className="grid sm:grid-cols-4 md:grid-cols-5 grid-cols-2 md:gap-x-10 gap-x-4 gap-y-10 relative">

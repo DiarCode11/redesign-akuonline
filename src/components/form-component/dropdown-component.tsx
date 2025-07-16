@@ -4,14 +4,14 @@ import { useState, useRef, useEffect } from "react"
 type DropdownComponentProps = {
     label : string,
     data : string[],
-    defaultDataIndex? : number,
+    defaultData? : string,
     placeholder: string,
     errorMsg?: string,
     onChange : (value: string) => void
 }
 
 
-export default function DropdownComponent({ label, data, defaultDataIndex, placeholder, errorMsg, onChange } : DropdownComponentProps) {
+export default function DropdownComponent({ label, data, defaultData, placeholder, errorMsg, onChange } : DropdownComponentProps) {
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
     const [item, setItem] = useState<string>('');
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -40,7 +40,7 @@ export default function DropdownComponent({ label, data, defaultDataIndex, place
                 {label}
             </label>
             <div ref={dropdownRef} onClick={() => setShowDropdown(!showDropdown)} className={`relative w-full h-9 border mt-1 text-sm flex pl-2 items-center border-gray-300 rounded-md ${item ? "text-black" : "text-gray-400"}`}>
-                {item ? item : (defaultDataIndex ? data[defaultDataIndex]: placeholder)}
+                {item ? item : (defaultData ? defaultData: placeholder)}
                 <ChevronDown className={`absolute right-2 text-gray-400 transition-transform duration-300 ${showDropdown ? "rotate-180" : "rotate-0"}`} size={18} />
                 { showDropdown &&  
                     <div className="max-h-32 overflow-y-auto w-full z-10 absolute shadow border border-neutral-500 rounded-md left-0 top-10 bg-white text-gray-400">

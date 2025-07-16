@@ -19,26 +19,45 @@ export type DataPribadiProps = {
     pekerjaan: string;                  // DropdownComponent
 };
 
+type defaultDataProps = {
+    nama: string,
+    status: string,
+    jenis_kelamin : string
+}
+
 type DataPribadi = {
     title : string
+    defaultData? : defaultDataProps
     onChange: (value: Partial<DataPribadiProps>) => void
 };
 
-export default function DataPribadiSection({ title, onChange }: DataPribadi) {
+export const hubunganKeluarga = [
+    "Kepala Keluarga",
+    "Istri",
+    "Anak",
+    "Menantu",
+    "Cucu",
+    "Orang Tua",
+    "Mertua",
+    "Famili Lain",
+    "Lainnya"
+];
 
+const defaultValue : defaultDataProps = {
+    jenis_kelamin: "",
+    nama: "",
+    status: ""
+}
+
+export default function DataPribadiSection({ title, defaultData = defaultValue, onChange }: DataPribadi) {
     const [dataPribadi, setDataPribadi] = useState<Partial<DataPribadiProps>>({});
+    function isDataNull() {
+        const isNull = defaultData.nama === "" && 
+                        defaultData.jenis_kelamin === "" && 
+                        defaultData.status === "";
+        return isNull; 
+    }
 
-    const hubunganKeluarga = [
-        "Kepala Keluarga",
-        "Istri",
-        "Anak",
-        "Menantu",
-        "Cucu",
-        "Orang Tua",
-        "Mertua",
-        "Famili Lain",
-        "Lainnya"
-    ];
 
     const pendidikanList = [
         "Tidak/belum Sekolah",
@@ -178,6 +197,7 @@ export default function DataPribadiSection({ title, onChange }: DataPribadi) {
                     keyname="nama_lengkap"
                     name="Nama Lengkap (Sesuai KTP)"
                     placeholder="Masukkan nama"
+                    defaultValue={defaultData.nama}
                     onChange={(data) => {
                         setDataPribadi(prep => ({
                             ...prep, nama_lengkap: data
@@ -187,6 +207,7 @@ export default function DataPribadiSection({ title, onChange }: DataPribadi) {
                 <DropdownComponent
                     label="Hubungan Dalam Keluarga"
                     data={hubunganKeluarga}
+                    defaultData={defaultData.status}
                     placeholder="Pilih hubungan"
                     onChange={(data) => {
                         setDataPribadi(prep => ({
@@ -213,6 +234,7 @@ export default function DataPribadiSection({ title, onChange }: DataPribadi) {
                     cols="grid-cols-2"
                     item={['Laki-laki', 'Perempuan']}
                     name="Jenis Kelamin"
+                    defaultItem={defaultData.jenis_kelamin}
                     onChange={(data) => {
                         setDataPribadi(prep => ({
                             ...prep, jenis_kelamin: data
@@ -223,6 +245,7 @@ export default function DataPribadiSection({ title, onChange }: DataPribadi) {
                     cols="grid-cols-4"
                     item={['A', 'B', 'O', 'AB']}
                     name="Golongan Darah"
+                    defaultItem={isDataNull() ? "" : "B"}
                     onChange={(data) => {
                         setDataPribadi(prep => ({
                             ...prep, golongan_darah: data
@@ -232,6 +255,7 @@ export default function DataPribadiSection({ title, onChange }: DataPribadi) {
                 <InputComponent
                     keyname="tempat_lahir"
                     name="Tempat Lahir"
+                    defaultValue={isDataNull() ? "" : "New York"}
                     placeholder="Masukkan tempat lahir"
                     onChange={(data) => {
                         setDataPribadi(prep => ({
@@ -241,6 +265,7 @@ export default function DataPribadiSection({ title, onChange }: DataPribadi) {
                 />
                 <DatePickerComponent
                     label="Tanggal Lahir"
+                    defaultDate={isDataNull() ? "" : "1999-12-12"}
                     onChange={(data) => {
                         setDataPribadi(prep => ({
                             ...prep, tanggal_lahir: data
@@ -250,6 +275,7 @@ export default function DataPribadiSection({ title, onChange }: DataPribadi) {
                 <DropdownComponent
                     label="Agama"
                     data={['Hindu', 'Islam', 'Kristen', 'Katholik', 'Buddha', 'Konghucu']}
+                    defaultData={isDataNull() ? "" : "Hindu"}
                     placeholder="Pilih agama"
                     onChange={(data) => {
                         setDataPribadi(prep => ({
@@ -261,6 +287,7 @@ export default function DataPribadiSection({ title, onChange }: DataPribadi) {
                     cols="grid-cols-2"
                     item={['WNI', 'WNA']}
                     name="Kewarganegaraan"
+                    defaultItem={isDataNull() ? "" : "WNI"}
                     onChange={(data) => {
                         setDataPribadi(prep => ({
                             ...prep, kewarganegaraan: data
@@ -270,6 +297,7 @@ export default function DataPribadiSection({ title, onChange }: DataPribadi) {
                 <DropdownComponent
                     label="Pendidikan Terakhir"
                     data={pendidikanList}
+                    defaultData={isDataNull() ? "" : "D4/S1"}
                     placeholder="Pilih jenis pendidikan"
                     onChange={(data) => {
                         setDataPribadi(prep => ({
@@ -280,6 +308,7 @@ export default function DataPribadiSection({ title, onChange }: DataPribadi) {
                 <DropdownComponent
                     label="Pekerjaan"
                     data={pilihan_pekerjaan_kk}
+                    defaultData={isDataNull() ? "" : "Pelajar / Mahasiswa"}
                     placeholder="Pilih jenis pekerjaan"
                     onChange={(data) => {
                         setDataPribadi(prep => ({

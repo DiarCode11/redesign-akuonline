@@ -11,10 +11,11 @@ export type DataOrangtuaProps = {
 
 type DataOrangtuaType = {
     title : string
+    addMode : boolean
     onChange : (value : Partial<DataOrangtuaProps>) => void
 }
 
-export default function DataOrangtuaSection({ title, onChange } : DataOrangtuaType) {
+export default function DataOrangtuaSection({ title, addMode, onChange } : DataOrangtuaType) {
     const [dataOrangtua, setDataOrangtua] = useState<Partial<DataOrangtuaProps>>({})
 
     useEffect(() => {
@@ -28,6 +29,7 @@ export default function DataOrangtuaSection({ title, onChange } : DataOrangtuaTy
                 <InputComponent
                     keyname="nama_ayah"
                     name="Nama Ayah"
+                    defaultValue={addMode ? "" : "Satosi Nakamoto"}
                     onChange={(data) => {
                         setDataOrangtua(prev => ({
                             ...prev, nama_ayah: data
@@ -39,17 +41,19 @@ export default function DataOrangtuaSection({ title, onChange } : DataOrangtuaTy
                 <InputComponent
                     keyname="nik_ayah"
                     name="NIK Ayah"
+                    defaultValue={addMode ? "" : "12122121211"}
                     onChange={(data) => {
                         setDataOrangtua(prev => ({
                             ...prev, nik_ayah: data
                         }))
                     }}
-                    placeholder="Masukkan NIK ayah"
+                    placeholder="Masukkan NIK ayah" 
                     dataType={DataType.Number}
                 />
                 <InputComponent
                     keyname="nama_ibu"
                     name="Nama ibu"
+                    defaultValue={addMode ? "" : "Sintaso Nakamichi"}
                     onChange={(data) => {
                         setDataOrangtua(prev => ({
                             ...prev, nama_ibu: data
@@ -61,6 +65,7 @@ export default function DataOrangtuaSection({ title, onChange } : DataOrangtuaTy
                 <InputComponent
                     keyname="nik_ibu"
                     name="NIK ibu"
+                    defaultValue={addMode ? "" : "12122121211"}
                     onChange={(data) => {
                         setDataOrangtua(prev => ({
                             ...prev, nik_ibu: data

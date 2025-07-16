@@ -74,7 +74,7 @@ export default function Accordion({ children, title, number, active, isOpen, onT
         </div>
         <ChevronDown
           className={`transform transition-transform duration-300 ease-in-out ${
-            isOpen && active ? "rotate-180" : "rotate-0"
+            isOpen && active ?  "rotate-0" : "rotate-180"
           } ${active ? '': 'text-gray-400'}`}
           size={20}
         />

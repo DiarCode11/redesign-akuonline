@@ -25,6 +25,7 @@ export default function KondisiKhususSection({ title, onChange } : KondisiKhusus
     ];
 
     const jenisKelainan = [
+        "Tidak Ada",
         "Tuna Daksa",
         "Tuna Netra",
         "Tuna Rungu",
@@ -47,6 +48,7 @@ export default function KondisiKhususSection({ title, onChange } : KondisiKhusus
                 <DropdownComponent
                     data={jenisDisabilitas}
                     label="Penyandang Disabilitas"
+                    defaultData="Tidak Ada"
                     onChange={(data) => {
                         setKondisiKhusus(prev => ({
                             ...prev, disabilitas: data
@@ -57,6 +59,7 @@ export default function KondisiKhususSection({ title, onChange } : KondisiKhusus
                 <DropdownComponent
                     data={jenisKelainan}
                     label="Kelainan Fisik & Mental"
+                    defaultData="Tidak Ada"
                     onChange={(data) => {
                         setKondisiKhusus(prev => ({
                             ...prev, kelainan: data

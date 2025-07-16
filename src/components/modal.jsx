@@ -3,7 +3,7 @@
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
-export default function Modal({ isOpen, onClose, title, children, width = "w-[600px]" }) {
+export default function Modal({ isOpen, onClose, title, children, width = "w-[600px]", height = "max-h-[90vh]" }) {
   const [isVisible, setIsVisible] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
 
@@ -85,7 +85,7 @@ export default function Modal({ isOpen, onClose, title, children, width = "w-[60
       onClick={handleBackdropClick}
     >
       <div
-        className={`bg-white rounded-2xl shadow-xl max-w-full min-h-[500px] max-h-[90vh] overflow-hidden flex flex-col transition-all duration-300 ease-out transform ${width} ${
+        className={`bg-white mx-3 rounded-2xl shadow-xl max-w-full min-h-[300px] ${height} overflow-hidden flex flex-col transition-all duration-300 ease-out transform ${width} ${
           isVisible
             ? 'scale-100 opacity-100 translate-y-0'
             : 'scale-95 opacity-0 translate-y-4'
@@ -94,7 +94,7 @@ export default function Modal({ isOpen, onClose, title, children, width = "w-[60
       >
         {/* Header */}
         <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200 flex-shrink-0">
-          <h2 className="text-lg font-semibold ">{title}</h2>
+          <h2 className="sm:text-lg font-semibold ">{title}</h2>
           <button
             onClick={handleClose}
             className="text-gray-500 hover:text-red-500 transition-colors p-1 rounded-full hover:bg-gray-100"

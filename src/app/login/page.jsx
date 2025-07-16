@@ -33,7 +33,7 @@ export default function Login() {
                     <span onClick={togglePasswordVisibility} className="absolute cursor-pointer top-2 right-3 text-slate-400">
                         {showPassword ? <EyeIcon /> : <EyeOff />}
                     </span>
-                    <span className="text-sm absolute -bottom-5">Lupa Password?</span>
+                    <span className="text-sm absolute -bottom-8">Lupa Password?</span>
                 </div>
                 <Button className={"primary-color text-white mt-10"}>
                     Masuk

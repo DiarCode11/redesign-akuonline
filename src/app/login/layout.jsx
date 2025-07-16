@@ -4,8 +4,8 @@ import Image from "next/image";
 
 export default function LoginLayout({ children }) {
     return (
-        <div className="w-full h-[100dvh] grid grid-cols-2 primary-color select-none">
-            <section className="flex justify-center items-center">
+        <div className="w-full h-[100dvh] grid sm:grid-cols-2 grid-cols-1 primary-color select-none">
+            <section className="justify-center items-center sm:flex hidden">
                 <Image
                     src={"LoginIcon.svg"}
                     alt="login icon"
@@ -13,16 +13,18 @@ export default function LoginLayout({ children }) {
                     height={400}
                 />
             </section>
-            <section className="bg-white h-full w-full rounded-tl-4xl rounded-bl-4xl">
-                <div className="flex justify-center mt-5">
-                    <Image
-                        src={"Logo.svg"}
-                        alt="Logo"
-                        width={200}
-                        height={200}
-                    />
+            <section className="bg-white h-full w-full sm:rounded-tl-4xl sm:rounded-bl-4xl flex justify-center items-center">
+                <div className="px-10 w-full">
+                    <div className="flex justify-center">
+                        <Image
+                            src={"Logo.svg"}
+                            alt="Logo"
+                            width={150}
+                            height={150}
+                        />
+                    </div>
+                    {children}
                 </div>
-                {children}
             </section>
         </div>
     );
