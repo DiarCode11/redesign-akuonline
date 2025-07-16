@@ -311,13 +311,13 @@ export default function EditKK() {
                     {/* Section data pribadi */}
                     <DataPribadiSection defaultData={{nama: updatedData.nama, status: updatedData.status, jenis_kelamin: updatedData.jenis_kelamin }} title="A. Data Pribadi" onChange={handleCallback} />
                     <div className="w-full border-gray-400 my-7 border"></div>
-                    <DokumenIdentitasSection AddMode={false} title="B. Dokumen Identitas" isWNA={formData.kewarganegaraan === 'WNA'} onChange={handleCallback}/>
+                    <DokumenIdentitasSection addMode={false} title="B. Dokumen Identitas" isWNA={formData.kewarganegaraan === 'WNA'} onChange={handleCallback}/>
                     <div className="w-full border-gray-400 my-7 border"></div>
-                    <DataPerkawinanSection title="C. Data Perkawinan" onChange={handleCallback} />
+                    <DataPerkawinanSection addMode={false} title="C. Data Perkawinan" onChange={handleCallback} />
                     <div className="w-full border-gray-400 my-7 border"></div>
                     <KondisiKhususSection title="D. Kondisi Khusus" onChange={handleCallback}/>
                     <div className="w-full border-gray-400 my-7 border"></div>
-                    <DataOrangtuaSection title="E. Data Orang Tua" onChange={handleCallback} />
+                    <DataOrangtuaSection addMode={false} title="E. Data Orang Tua" onChange={handleCallback} />
                     <div className="flex justify-end pt-5">
                         {/* disabled={!buatFormulirValid()} nanti tambahkan disini */}
                         <Button onClick={() => saveData()} variant="primary" size={"md"} className={"bg-sky-600 text-white px-4 py-2"}>
