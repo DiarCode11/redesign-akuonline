@@ -45,13 +45,15 @@ type dataKeluargaProps = {
     jenis_kelamin: string,
 }
 
-type deleteDataProps = {
+
+
+type addAnddeleteDataProps = {
     alasan: string
 }
 
 export default function EditKK() {
     const [familyData, setFamilyData] = useState<Partial<dataKKProps>>({});
-    const [formData, setFormData] = useState<Partial<formDataProps>>({})
+    const [formData, setFormData] = useState<Partial<formDataProps & addAnddeleteDataProps>>({})
     const [accordionActive, setAccordionActive] = useState<number>(1);
     const [currentStep, setCurrentStep] = useState<number>(1);
     const [dataKKList, setDataKKList] = useState<Partial<formDataProps>[]>([]);
@@ -62,10 +64,12 @@ export default function EditKK() {
     const [isAllDocDownloaded, setAllDocDownloaded] = useState<boolean>(false);
     const [showDataAnggota, setShowDataAnggota] = useState<boolean>(false);
     const [activateSearch, setActivateSearch] = useState<boolean>(false);
-    const [deletedData, setDeletedData] = useState<Partial<dataKeluargaProps & deleteDataProps>>({});
+    const [deletedData, setDeletedData] = useState<Partial<dataKeluargaProps & addAnddeleteDataProps>>({});
+    const [addedData, setAddedData] = useState<Partial<dataKeluargaProps & addAnddeleteDataProps>>({});
     const [updatedData, setUpdatedData] = useState<Partial<dataKeluargaProps>>({});
     const [listUpdatedData, setListUpdatedData] = useState<dataKeluargaProps[]>([]);
-    const [listDeletedData, setListDeletedData] = useState<Partial<dataKeluargaProps & deleteDataProps>[]>([]);
+    const [listDeletedData, setListDeletedData] = useState<Partial<dataKeluargaProps & addAnddeleteDataProps>[]>([]);
+    const [listAddedData, setListAddedData] = useState<Partial<formDataProps & addAnddeleteDataProps>[]>([]);
     const [showDeletedData, setShowDeletedData] = useState<boolean>(false);
     const [showUpdatedData, setShowUpdatedData] = useState<boolean>(false);
     const [disableDelete, setDisableDelete] = useState<boolean>(true);
@@ -106,7 +110,7 @@ export default function EditKK() {
         setIsEditDataModalOpen(true);
     }
 
-    const handleCallback = useCallback((data: Partial<formDataProps>) => {
+    const handleCallback = useCallback((data: Partial<formDataProps & addAnddeleteDataProps>) => {
         setFormData(prev => ({
             ...prev,
             ...data
@@ -185,11 +189,11 @@ export default function EditKK() {
     }, [familyData]);
 
     useEffect(() => {
-        console.log(formData)
+        console.log("Data form: ", formData)
     }, [formData])
 
     useEffect(() => {
-        console.log(updatedData)
+        console.log("Tes Update data: ", updatedData)
     }, [updatedData])
 
     function deleteData(index : number) {
@@ -201,6 +205,16 @@ export default function EditKK() {
         const data : dataKeluargaProps = dataAnggota[index]
         setUpdatedData(data);
         setIsEditDataModalOpen(true)
+    }
+
+    function saveAddData() {
+        setListAddedData(prev => [...prev, formData as formDataProps])
+        setFormData({});
+        setIsAddDataModalOpen(false);
+    }
+
+    function cancelAddData(index: number) {
+        setListAddedData(prev => prev.filter((_, i) => i = index));
     }
 
     function cancelUpdate(index: number) {
@@ -261,7 +275,17 @@ export default function EditKK() {
             } }>
                 <div className="sm:px-3 px-2 pb-7">
                     {/* Section data pribadi */}
-                    <AddingDataReason title="A. Alasan Penambahan" onChange={() => {}} />
+                    <section>
+                        <h1 className="text-md font-semibold">A. Alasan Penambahan</h1>
+                        <div className="grid sm:grid-cols-2 grid-cols-1 gap-y-6 gap-x-8 mt-5">
+                            <DropdownComponent
+                                data={['Kelahiran', 'Menikah', 'Pindah datang', 'Adopsi']}
+                                label="Alasan"
+                                onChange={(data) => {handleCallback({alasan: data})}}
+                                placeholder="Pilih alasan"
+                            />
+                        </div>
+                    </section>
                     <div className="w-full border-gray-400 my-7 border"></div>
                     <DataPribadiSection title="B. Data Pribadi" onChange={handleCallback} />
                     <div className="w-full border-gray-400 my-7 border"></div>
@@ -274,7 +298,7 @@ export default function EditKK() {
                     <DataOrangtuaSection addMode={isAddDataModalOpen} title="F. Data Orang Tua" onChange={handleCallback} />
                     <div className="flex justify-end pt-5">
                         {/* disabled={!buatFormulirValid()} nanti tambahkan disini */}
-                        <Button onClick={() => saveData()} variant="primary" size={"md"} className={"bg-sky-600 text-white px-4 py-2"}>
+                        <Button onClick={() => saveAddData()} variant="primary" size={"md"} className={"bg-sky-600 text-white px-4 py-2"}>
                             Simpan
                         </Button>
                     </div>
@@ -461,8 +485,40 @@ export default function EditKK() {
                             </div>
                         </div>
                     )}
-                    { listDeletedData.length > 0 && listUpdatedData.length > 0 && (
-                        <div className="flex justify-end pt-5">
+
+                    {/* Tabel Tambah Data  */}
+                    { listAddedData.length > 0 && (
+                        <div className="pt-8">
+                            <h3>Data yang ditambahkan</h3>
+                            <div className="overflow-x-auto">
+                                <table className="sm:w-full w-max">
+                                    <thead className="">
+                                        <tr className="bg-gray-600 w-full">
+                                            <th className="text-left w-[200px] px-5 text-white">Nama</th>
+                                            <th className="text-left w-[250px] text-white">Alasan penambahan</th>
+                                            <th className="text-center text-white">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="font-medium">
+                                        { listAddedData.map((item, index)=> (
+                                            <tr key={index} className="font-medium border-b border-gray-400">
+                                                <th className="font-medium text-left px-5">{item.nama_lengkap}</th>
+                                                <th className="font-medium text-left">{item.alasan}</th>
+                                                <th className="flex justify-center space-x-2 px-5">
+                                                    <Button onClick={() => cancelAddData(index)} className={'bg-red-600 my-2 cursor-pointer text-white px-4 py-1'} size={'md'} variant={'primary'}>
+                                                        Batal
+                                                    </Button>
+                                                </th>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+
+                    { (listDeletedData.length > 0 || listUpdatedData.length > 0 || listAddedData.length > 0) && (
+                        <div className="flex justify-end pt-10">
                             {/* disabled={!buatFormulirValid()} nanti tambahkan disini */}
                             <Button onClick={() => nextToStep(2)} variant="primary" size={"md"} className={"bg-sky-600 text-white px-4 py-2"}>
                                 Lanjut

@@ -195,7 +195,7 @@ export default function DataPribadiSection({ title, defaultData = defaultValue, 
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-y-6 gap-x-8 mt-5">
                 <InputComponent 
                     keyname="nama_lengkap"
-                    name="Nama Lengkap (Sesuai KTP)"
+                    name="Nama Lengkap"
                     placeholder="Masukkan nama"
                     defaultValue={defaultData.nama}
                     onChange={(data) => {

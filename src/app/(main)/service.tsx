@@ -80,24 +80,28 @@ const KTP_menus = [
     name: "Buat KTP baru",
     icon: "addKTP.svg",
     color: "#71C76C",
+    link: "/ktp/buat-ktp",
     size: 50
   },
   {
     name: "Perubahan data",
     icon: "editKTP.svg",
     color: "#71C76C",
+    link: "/ktp/ubah-data",
     size: 50
   },
   {
     name: "KTP hilang",
     icon: "findingKTP.svg",
     color: "#71C76C",
+    link: "/ktp/ktp-hilang",
     size: 50
   },
   {
     name: "KTP Rusak",
     icon: "defectiveKTP.svg",
     color: "#71C76C",
+    link: "/ktp/ktp-rusak",
     size: 50
   },
 ]
@@ -213,9 +217,9 @@ export default function ServicesComponent() {
         title="Kartu Keluarga"
         width="w-[700px]" // Bisa disesuaikan
       >
-        <div className="grid grid-cols-4 gap-x-10 gap-y-16 px-10 py-6">
+        <div className="grid sm:grid-cols-4 grid-cols-2 gap-x-10 gap-y-16 px-10 py-6">
           {KTP_menus.map((menu, index) => (
-            <div key={index}>
+            <Link href={menu.link} key={index}>
               <div className="flex justify-center items-center h-[110px] border-3 rounded-2xl" style={{ borderColor: menu.color }}>
                 <Image
                   src={menu.icon}
@@ -225,7 +229,7 @@ export default function ServicesComponent() {
                 />
               </div>
               <p className="text-center pt-2 font-semibold">{menu.name}</p>
-            </div>
+            </Link>
           ))}
         </div>
       </Modal>

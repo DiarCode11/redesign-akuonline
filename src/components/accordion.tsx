@@ -8,10 +8,12 @@ type AccordionProps = {
   number: number,
   active: boolean,
   isOpen: boolean,
+  bulletColor?: string,
   onToggle: (value: boolean) => void
+  setOverflow?: boolean
 }
 
-export default function Accordion({ children, title, number, active, isOpen, onToggle }: AccordionProps) {
+export default function Accordion({ children, title, number, active, isOpen, onToggle, bulletColor = 'primary-color', setOverflow = true }: AccordionProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [maxHeight, setMaxHeight] = useState("0px");
 
@@ -61,13 +63,13 @@ export default function Accordion({ children, title, number, active, isOpen, onT
   }, [children, isOpen, active, updateHeight]);
 
   return (
-    <section className="bg-white w-full h-max rounded-2xl overflow-hidden shadow-sm border-2 border-gray-200">
+    <section className={`bg-white w-full h-max rounded-2xl ${setOverflow && 'overflow-hidden'} shadow-sm border-2 border-gray-200`}>
       <div
         onClick={() => onToggle(!isOpen)}     
-        className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors duration-200"
+        className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 hover:rounded-2xl transition-colors duration-200"
       >
         <div className="flex items-center">
-          <div className={`w-7 h-7 mr-4 flex justify-center items-center text-white rounded-full text-sm font-medium ${active ? 'primary-color': 'bg-gray-300'}`}>
+          <div className={`w-7 h-7 mr-4 flex justify-center items-center text-white rounded-full text-sm font-medium ${active ? bulletColor : 'bg-gray-300'}`}>
             {number}
           </div>
           <h1 className={`font-medium select-none ${active ? 'text-gray-800' : 'text-gray-400'}`}>{title}</h1>
@@ -82,7 +84,8 @@ export default function Accordion({ children, title, number, active, isOpen, onT
       <div
         ref={contentRef}
         style={{ maxHeight }}
-        className="transition-all duration-300 ease-in-out overflow-hidden"
+        className="transition-all duration-300 ease-in-out overfl"
+        // overflow-hidden
       >
         <div className="p-8 pt-0 border-t border-gray-100">{children}</div>
       </div>
