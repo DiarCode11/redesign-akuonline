@@ -108,46 +108,10 @@ const KTP_menus = [
 
 const akta_menus = [
   {
-    name: "Akta Kelahiran",
+    name: "Pembuatan Akta",
     icon: "aktaKelahiran.svg",
     color: "#BC9061",
     size: 50
-  },
-  {
-    name: "Akta Kematian",
-    icon: "aktaKematian.svg",
-    color: "#BC9061",
-    size: 50
-  },
-  {
-    name: "Akta Perkawinan",
-    icon: "aktaPerkawinan.svg",
-    color: "#BC9061",
-    size: 60
-  },
-  {
-    name: "Akta Perceraian",
-    icon: "aktaPerceraian.svg",
-    color: "#BC9061",
-    size: 60
-  },
-  {
-    name: "Pengakuan Anak",
-    icon: "pengakuanAnak.svg",
-    color: "#BC9061",
-    size: 35
-  },
-  {
-    name: "Pengesahan Anak",
-    icon: "pengesahanAnak.svg",
-    color: "#BC9061",
-    size: 50
-  },
-  {
-    name: "Pengangkatan Anak",
-    icon: "pengangkatanAnak.svg",
-    color: "#BC9061",
-    size: 60
   },
   {
     name: "Pembetulan Akta",
@@ -156,20 +120,8 @@ const akta_menus = [
     size: 50
   },
   {
-    name: "Perubahan Nama",
-    icon: "perubahanNama.svg",
-    color: "#BC9061",
-    size: 60
-  },
-  {
     name: "Perubahan Kewarganegaraan",
     icon: "perubahanKewarganegaraan.svg",
-    color: "#BC9061",
-    size: 50
-  },
-  {
-    name: "Pembatalan Akta",
-    icon: "pembatalanAkta.svg",
     color: "#BC9061",
     size: 50
   },

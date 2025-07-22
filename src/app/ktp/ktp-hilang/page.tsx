@@ -11,7 +11,7 @@ import { Download } from "lucide-react";
 import FileInput from "@/components/form-component/fileinput-component";
 
 
-export default function KKHilang() {
+export default function KTPHilang() {
     const [accordionActive, setAccordionActive] = useState<number>(1);
     const [currentStep, setCurrentStep] = useState<number>(1);
     const [overflowStatus, setOverflowStatus] = useState<boolean>(true);
@@ -49,13 +49,14 @@ export default function KKHilang() {
                 <Link href={"/"}>
                     <ArrowLeft />
                 </Link>
-                <h1 className="font-semibold text-xl t">Kehilangan Kartu Keluarga</h1>
+                <h1 className="font-semibold text-xl t">Pengajuan KTP Baru Karena Kehilangan</h1>
             </div>
             <div className="flex flex-col space-y-2">
                 <Accordion
                     title={"Informasi Pemohon"} 
                     number={1} 
                     active={currentStep >= 1 } 
+                    bulletColor="bg-green-600"
                     isOpen={accordionActive === 1} 
                     setOverflow={overflowStatus}
                     onToggle={(isOpen) => {
@@ -98,6 +99,7 @@ export default function KKHilang() {
                 <Accordion
                     title={"Download Formulir"} 
                     number={2} 
+                    bulletColor="bg-green-600"
                     active={currentStep >= 2} 
                     isOpen={accordionActive === 2} 
                     onToggle={(isOpen) => {
@@ -134,7 +136,8 @@ export default function KKHilang() {
                 {/* Accordion 3 */}
                 <Accordion
                     title={"Upload Formulir"} 
-                    number={3}
+                    bulletColor="bg-green-600"
+                    number={3} 
                     active={currentStep >= 3} 
                     isOpen={accordionActive === 3} 
                     onToggle={(isOpen) => {
@@ -147,9 +150,6 @@ export default function KKHilang() {
                     <div className="flex flex-col space-y-3">
                         <FileInput onChange={() => {}} id="form_pendaftaran" label="Formulir Pendaftaran Peristiwa Kependudukan" />
                         <FileInput onChange={() => {}} id="pendaftaran_peristiwa" label="Surat Keterangan Kehilangan dari Kepolisian" />
-                        <FileInput onChange={() => {}} id="ktp1" label={`Scan KTP "I Wayan Yoga Sastrawan"`} />
-                        <FileInput onChange={() => {}} id="ktp2" label={`Scan KTP "Mariah Maclachlan"`} />
-                        <FileInput onChange={() => {}} id="akta_kawin" label="Scan Akta Perkawinan" />
                     </div>
                     <div className="pt-10 flex justify-end">
                         <Link href={'/'}>
