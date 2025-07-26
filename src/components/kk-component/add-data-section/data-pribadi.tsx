@@ -240,6 +240,7 @@ export default function DataPribadiSection({ title, onChange }: DataPribadi) {
                     }}
                 />
                 <DatePickerComponent
+                    getToggleStatus={() => {}}
                     label="Tanggal Lahir"
                     onChange={(data) => {
                         setDataPribadi(prep => ({
