@@ -93,6 +93,7 @@ export default function DokumenIdentitasSection({ title, isWNA = false, onChange
                 {isWNA && (
                     <>
                         <DropdownComponent
+                            getDropdownStatus={() => {}}
                             data={['Individu', 'Badan Usaha/Perusahaan', 'Institusi Pendidikan', 'Organisasi Keagamaan', 'Lainnya']}
                             label="Tipe Sponsor"
                             onChange={(data) => {
