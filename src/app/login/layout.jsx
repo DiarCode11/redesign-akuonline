@@ -1,8 +1,15 @@
-"use client";
-import React from "react";
 import Image from "next/image";
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 
-export default function LoginLayout({ children }) {
+export default async function LoginLayout({ children }) {
+      const cookiesStore = await cookies();
+      const token = cookiesStore.get('auth_token')?.value
+    
+      if (token) {
+        redirect('/') // Tidak sempat render Home sama sekali
+      }
+
     return (
         <div className="w-full h-[100dvh] grid sm:grid-cols-2 grid-cols-1 primary-color select-none">
             <section className="justify-center items-center sm:flex hidden">

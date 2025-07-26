@@ -5,20 +5,21 @@ import Modal from "@/components/modal";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { link } from "fs";
 
 const menus = [
   {
     name: "Kartu Keluarga",
     icon: "KKIcon.svg",
     color: "#F25555",
-    size: 100,
+    size: 60,
     id: "KK"
   },
   {
     name: "Kartu Tanda Penduduk",
     icon: "KTPIcon.svg",
     color: "#71C76C",
-    size: 100,
+    size: 70,
     id: "KTP"
   },
   {
@@ -39,7 +40,7 @@ const menus = [
     name: "Kartu Identitas Anak",
     icon: "KIAIcon.svg",
     color: "#FF657E",
-    size: 110,
+    size: 80,
     id: "KIA"
   },
 ]
@@ -109,27 +110,31 @@ const KTP_menus = [
 const akta_menus = [
   {
     name: "Pembuatan Akta",
-    icon: "aktaKelahiran.svg",
+    icon: "Frame (7).svg",
     color: "#BC9061",
-    size: 50
+    size: 50,
+    link: "/akta/buat-akta"
   },
   {
     name: "Pembetulan Akta",
     icon: "pembetulanAkta.svg",
     color: "#BC9061",
-    size: 50
+    size: 50,
+    link: "/akta/pembetulan-akta"
   },
   {
     name: "Perubahan Kewarganegaraan",
     icon: "perubahanKewarganegaraan.svg",
     color: "#BC9061",
-    size: 50
+    size: 50,
+    link: "/akta/perubahan-kewarganegaraan"
   },
   {
     name: "Akta Hilang",
     icon: "aktaHilang.svg",
     color: "#BC9061",
-    size: 55
+    size: 55,
+    link: "/akta/kehilangan-akta"
   },
 ]
 
@@ -193,19 +198,23 @@ export default function ServicesComponent() {
         title="Layanan Akta"
         width="w-[700px]" // Bisa disesuaikan
       >
-        <div className="grid grid-cols-4 gap-x-10 gap-y-16 px-10 py-6">
+        <div className="grid sm:grid-cols-4 grid-cols-2 gap-y-16 py-6">
           {akta_menus.map((menu, index) => (
-            <div key={index} className="cursor-pointer">
-              <div className="flex justify-center items-center h-[110px] border-3 rounded-2xl" style={{ borderColor: menu.color }}>
-                <Image
+            <Link href={menu.link} key={index} >
+              <div className="w-full flex flex-col items-center">
+                <div className="cursor-pointer flex flex-col items-center">
+                <div className="flex justify-center items-center h-[110px] w-[110px] border-3 rounded-2xl" style={{ borderColor: menu.color }}>
+                  <Image
                   src={menu.icon}
                   alt={menu.name}
                   width={menu.size}
                   height={menu.size}
-                />
+                  />
+                </div>
+                <p className="text-center pt-2 font-semibold">{menu.name}</p>
+                </div>
               </div>
-              <p className="text-center pt-2 font-semibold">{menu.name}</p>
-            </div>
+            </Link>
           ))}
         </div>
       </Modal>
@@ -220,10 +229,10 @@ export default function ServicesComponent() {
                   <Image
                     src={menu.icon}
                     alt="login icon"
-                    width={menu.size}
-                    height={menu.size}
+                    width={40}
+                    height={40}
                   />
-                  <p className="text-center font-semibold text-lg text-white pt-5 px-4 ">{menu.name}</p>
+                  <p className="text-center font-semibold text-white pt-5 px-4 ">{menu.name}</p>
                 </div>
               ): (
                 <div className="flex flex-col justify-center items-center py-5 h-48">
@@ -233,7 +242,7 @@ export default function ServicesComponent() {
                     width={menu.size}
                     height={menu.size}
                   />
-                  <p className="text-center font-semibold text-lg text-white px-4">{menu.name}</p>
+                  <p className="text-center font-semibold text-white px-4">{menu.name}</p>
                 </div>
               )}
             </div>

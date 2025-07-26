@@ -43,7 +43,7 @@ export default function DropdownComponent({ label, data, defaultData, placeholde
                 {item ? item : (defaultData ? defaultData: placeholder)}
                 <ChevronDown className={`absolute right-2 text-gray-400 transition-transform duration-300 ${showDropdown ? "rotate-180" : "rotate-0"}`} size={18} />
                 { showDropdown &&  
-                    <div className="max-h-32 overflow-y-auto w-full z-10 absolute shadow border border-neutral-500 rounded-md left-0 top-10 bg-white text-gray-400">
+                    <div className="max-h-32 mb-4 overflow-y-auto w-full z-10 absolute shadow border border-neutral-500 rounded-md left-0 top-10 bg-white text-gray-400">
                         <ul className="h-full">
                             {data.map((item, index) => (
                                 <li onClick={() => selectItem(item)} className="py-1 px-2 cursor-pointer rounded-md hover:bg-gray-100 text-gray-400" key={index}>{item}</li>

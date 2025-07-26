@@ -10,7 +10,7 @@ type DateDropdownProps = {
     defaultDate?: string, // Format: YYYY-MM-DD
     onChange: (date: string) => void
     isOpenExternally?: boolean;
-    getToggleStatus?: (status: boolean) => void
+    getToggleStatus: (status: boolean) => void
     showCalendar?: boolean
 }
 

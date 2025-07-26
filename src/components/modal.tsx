@@ -1,9 +1,18 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
-export default function Modal({ isOpen, onClose, title, children, width = "w-[600px]", height = "max-h-[90vh]" }) {
+type ModalProps = {
+  isOpen: boolean,
+  onClose: () => void,
+  title: string,
+  children: ReactNode,
+  width?: string,
+  height?: string
+}
+
+export default function Modal({ isOpen, onClose, title, children, width = "w-[600px]", height = "max-h-[90vh]" }: ModalProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
 
