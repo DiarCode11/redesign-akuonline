@@ -30,6 +30,7 @@ export default function DataPerkawinanSection({ title, addMode = false, onChange
             <h1 className="text-md font-semibold">{title}</h1>
             <div className="grid sm:grid-cols-2 grid-cols-1 gap-y-6 gap-x-8 mt-5">
                 <DropdownComponent
+                    getDropdownStatus={() => {}}
                     data={['Belum/Tidak kawin', 'Kawin', 'Cerai Hidup', 'Cerai Mati']}
                     label="Status Perkawinan"
                     defaultData={addMode ? "" : "Kawin"}
