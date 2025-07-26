@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
             />
         </div>
       </nav>
-      <main className="bg-slate-200 pt-28 z-0">
+      <main className="bg-slate-200 pt-28 pb-12 z-0">
         {children}
       </main>
       <footer className="flex items-end">
