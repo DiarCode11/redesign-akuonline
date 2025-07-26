@@ -184,7 +184,8 @@ export default function DataPribadiSection({ title, onChange }: DataPribadi) {
                         }))
                     }}
                 />
-                <DropdownComponent
+                <DropdownComponent 
+                    getDropdownStatus={() => {}}
                     label="Hubungan Dalam Keluarga"
                     data={hubunganKeluarga}
                     placeholder="Pilih hubungan"
@@ -248,7 +249,8 @@ export default function DataPribadiSection({ title, onChange }: DataPribadi) {
                         }))
                     }}
                 />
-                <DropdownComponent
+                <DropdownComponent 
+                    getDropdownStatus={() => {}}
                     label="Agama"
                     data={['Hindu', 'Islam', 'Kristen', 'Katholik', 'Buddha', 'Konghucu']}
                     placeholder="Pilih agama"
@@ -268,7 +270,8 @@ export default function DataPribadiSection({ title, onChange }: DataPribadi) {
                         }))
                     }}
                 />
-                <DropdownComponent
+                <DropdownComponent 
+                    getDropdownStatus={() => {}}
                     label="Pendidikan Terakhir"
                     data={pendidikanList}
                     placeholder="Pilih jenis pendidikan"
@@ -278,7 +281,8 @@ export default function DataPribadiSection({ title, onChange }: DataPribadi) {
                         }))
                     }}
                 />
-                <DropdownComponent
+                <DropdownComponent 
+                    getDropdownStatus={() => {}}
                     label="Pekerjaan"
                     data={pilihan_pekerjaan_kk}
                     placeholder="Pilih jenis pekerjaan"

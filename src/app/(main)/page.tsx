@@ -17,7 +17,7 @@ export default async function Home() {
         <h1 className="md:pl-3 font-semibold text-2xl text-sky-600">I Wayan Yoga Sastrawan</h1>
       </div>
       <p className="pl-4 pb-10 text-slate-400">Selalu jaga kerahasiaan NIK dan Password anda</p>
-      <div className="h-full rounded-t-[50px] bg-white py-10 md:px-16 px-5">
+      <div className="h-full w-full rounded-t-[50px] bg-white py-10 md:px-16 px-5">
         <ServicesComponent />
       </div>
     </div>

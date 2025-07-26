@@ -7,11 +7,12 @@ type DropdownComponentProps = {
     defaultData? : string,
     placeholder: string,
     errorMsg?: string,
+    getDropdownStatus: (value: boolean) => void
     onChange : (value: string) => void
 }
 
 
-export default function DropdownComponent({ label, data, defaultData, placeholder, errorMsg, onChange } : DropdownComponentProps) {
+export default function DropdownComponent({ label, data, defaultData, placeholder, errorMsg, onChange, getDropdownStatus } : DropdownComponentProps) {
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
     const [item, setItem] = useState<string>('');
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -33,6 +34,10 @@ export default function DropdownComponent({ label, data, defaultData, placeholde
             document.removeEventListener("click", handleClickOutside);
         }
     }, []);
+
+    useEffect(() => {
+        getDropdownStatus(showDropdown);
+    }, [showDropdown, getDropdownStatus])
 
     return (
         <div>

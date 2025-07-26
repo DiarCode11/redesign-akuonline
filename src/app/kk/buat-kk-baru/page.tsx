@@ -208,6 +208,7 @@ export default function NewKK() {
                             />
                         </div>
                         <DropdownComponent
+                            getDropdownStatus={() => {}}
                             data={Object.keys(VILLAGE_DATA)}
                             label="Kecamatan"
                             placeholder="Pilih kecamatan"
@@ -219,6 +220,7 @@ export default function NewKK() {
                             }}
                             />
                         <DropdownComponent
+                            getDropdownStatus={() => {}}
                             data={villages}
                             label="Desa"
                             placeholder="Pilih desa"

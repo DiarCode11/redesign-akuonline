@@ -54,7 +54,7 @@ const village_data: Record<string, string[]> = {
   ]
 }
 
-export default function PembetulanAkta() {
+export default function PerubahanKewarganegaraan() {
     const [villages, setVillages] = useState<string[]>([]);
     const [isAllDocDownloaded, setAllDocDownloaded] = useState<boolean>(false);
     const [overflowStatus, setOverflowStatus] = useState<boolean>(true);
@@ -88,7 +88,7 @@ export default function PembetulanAkta() {
                 <Link href={"/"}>
                     <ArrowLeft />
                 </Link>
-                <h1 className="font-semibold text-xl">Pembetulan Akta</h1>
+                <h1 className="font-semibold text-xl">Perubahan Kewarganegaraan</h1>
             </div>
 
             <div className="flex flex-col space-y-2">
@@ -208,8 +208,12 @@ export default function PembetulanAkta() {
                 >
                     <h3 className="text-sm py-4 text-gray-400">Lakukan upload file yang sudah diisi tandatangan/materai</h3>
                     <div className="flex flex-col space-y-3">
-                        <FileInput onChange={() => {}} id="form_isian" label="F-2.01 (Formulir Pencatatan Sipil)" />
-                        <FileInput onChange={() => {}} id="perubahan_elemen" label="Scan Kartu Keluarga" />
+                        <FileInput onChange={() => {}} id="form_1" label="F-2.01 (Formulir Pencatatan Sipil)" />
+                        <FileInput onChange={() => {}} id="form_2" label="Scan Putusan Menteri" />
+                        <FileInput onChange={() => {}} id="form_3" label="Scan Berita Acara Pengucapan Sumpah" />
+                        <FileInput onChange={() => {}} id="form_4" label="Kutipan Akta Pencatatan Sipil" />
+                        <FileInput onChange={() => {}} id="form_5" label="Scan Kartu Keluarga" />
+                        <FileInput onChange={() => {}} id="form_6" label="Scan KTP" />
                     </div>
                     <div className="flex justify-end pt-5">
                         <Link href={'/'}>

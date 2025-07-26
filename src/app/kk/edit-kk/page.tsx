@@ -279,6 +279,7 @@ export default function EditKK() {
                         <h1 className="text-md font-semibold">A. Alasan Penambahan</h1>
                         <div className="grid sm:grid-cols-2 grid-cols-1 gap-y-6 gap-x-8 mt-5">
                             <DropdownComponent
+                                getDropdownStatus={() => {}}
                                 data={['Kelahiran', 'Menikah', 'Pindah datang', 'Adopsi']}
                                 label="Alasan"
                                 onChange={(data) => {handleCallback({alasan: data})}}
@@ -311,6 +312,7 @@ export default function EditKK() {
             }}>
                 <>
                     <DropdownComponent 
+                        getDropdownStatus={() => {}}
                         data={['Kesalahan data', 'Meninggal dunia', 'Perceraian', 'Pernikahan', 'Pindah Domisili', 'Pisah KK']} 
                         label={`Alasan pengurangan anggota "${deletedData.nama}"`}
                         onChange={(data) => { 

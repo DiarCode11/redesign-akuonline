@@ -88,12 +88,12 @@ export function DataAnakForm({ label, formTitle }: PelaporFormProps) {
                     <div className="grid sm:grid-cols-2 grid-cols-1 gap-x-5 gap-y-7 px-4">
                         <InputComponent name="Nama" onChange={(data) => {setSelectedName(data)}} keyname="nama" placeholder="Masukkan nama" />
                         <RadioComponent cols="sm:grid-cols-2" item={['Laki-laki', 'Perempuan']} name="Jenis kelamin" onChange={() => {}} />
-                        <DropdownComponent data={['Rumah Sakit', 'Puskesmas', 'Polindes', 'Lainnya']} label="Tempat dilahirkan" onChange={() => {}} placeholder="Pilih tempat" />
+                        <DropdownComponent getDropdownStatus={() => {}} data={['Rumah Sakit', 'Puskesmas', 'Polindes', 'Lainnya']} label="Tempat dilahirkan" onChange={() => {}} placeholder="Pilih tempat" />
                         <InputComponent name="Tempat kelahiran" onChange={() => {}} keyname="tempat-kelahiran" placeholder="Masukkan nama daerah" />
                         <DatePickerComponent label="Tanggal lahir" onChange={() => {}} getToggleStatus={() => {}} />
                         <InputComponent keyname="waktu-lahir" name="Waktu lahir" onChange={() => {}} placeholder="Pilih waktu"/>
-                        <DropdownComponent data={['Tunggal', 'Kembar 2', 'Kembar 3', 'Kembar 4', 'Lainnya']} label="Jenis kelahiran" onChange={(data) => {}} placeholder={"Pilih jenis kelahiran"} />
-                        <DropdownComponent data={['Dokter', 'Bidan/Perawat', 'Dukun', 'Lainnya']} label="Penolong kelahiran" onChange={(data) => {}} placeholder={"Pilih jenis kelahiran"} />
+                        <DropdownComponent getDropdownStatus={() => {}} data={['Tunggal', 'Kembar 2', 'Kembar 3', 'Kembar 4', 'Lainnya']} label="Jenis kelahiran" onChange={(data) => {}} placeholder={"Pilih jenis kelahiran"} />
+                        <DropdownComponent getDropdownStatus={() => {}} data={['Dokter', 'Bidan/Perawat', 'Dukun', 'Lainnya']} label="Penolong kelahiran" onChange={(data) => {}} placeholder={"Pilih jenis kelahiran"} />
                         <InputComponent name="Kelahiran ke" onChange={() => {}} keyname="kelahiran-ke" placeholder="Masukkan urutan kelahiran" dataType="number" />
                         <InputComponent name="Berat bayi (kg)" onChange={() => {}} keyname="berat-bayi" placeholder="Masukkan berat bayi" dataType="number" />
                         <InputComponent name="Panjang bayi (cm)" onChange={() => {}} keyname="panjang-bayi" placeholder="Masukkan panjang bayi" dataType="number" />
@@ -147,11 +147,11 @@ export function DataKematianForm({ label, formTitle }: PelaporFormProps) {
                 <div className="py-3">
                     <div className="grid sm:grid-cols-2 grid-cols-1 gap-x-5 gap-y-7 px-4">
                         <InputComponent name="Nama" onChange={(data) => {setSelectedName(data)}} keyname="nama" placeholder="Masukkan nama" />
-                        <DropdownComponent data={['Sakit biasa/tua', 'Wabah penyakit', 'Kecelakaan', 'Kriminalitas', 'Bunuh diri', 'Lainnya']} label="Sebab kematian" onChange={() => {}} placeholder="Pilih sebab" />
+                        <DropdownComponent getDropdownStatus={() => {}} data={['Sakit biasa/tua', 'Wabah penyakit', 'Kecelakaan', 'Kriminalitas', 'Bunuh diri', 'Lainnya']} label="Sebab kematian" onChange={() => {}} placeholder="Pilih sebab" />
                         <DatePickerComponent label="Tanggal kematian" onChange={() => {}} getToggleStatus={() => {}} />
                         <InputComponent keyname="waktu-lahir" name="Waktu kematian" onChange={() => {}} placeholder="Pilih waktu"/>
                         <InputComponent name="Tempat kematian" onChange={() => {}} keyname="kelahiran-ke" placeholder="Masukkan urutan kelahiran" dataType="number" />
-                        <DropdownComponent data={['Dokter', 'Tenaga Kesehatan', 'Kepolisian', 'Kepala desa', 'Lainnya']} label="Yang menerangkan" onChange={() => {}} placeholder="Pilih jenis" />
+                        <DropdownComponent getDropdownStatus={() => {}} data={['Dokter', 'Tenaga Kesehatan', 'Kepolisian', 'Kepala desa', 'Lainnya']} label="Yang menerangkan" onChange={() => {}} placeholder="Pilih jenis" />
                     </div>
                     <div className="pt-10 flex justify-end">
                         <Button 
@@ -212,7 +212,7 @@ export function DataSuamiIstriForm({ formTitle, status = "Suami" }: Partial<Pela
                         <InputComponent name="NIK Ayah" onChange={(data) => {}} keyname="nik-ayah" dataType="number" placeholder="Masukkan NIK" />
                         <InputComponent name="Nama Ibu" onChange={(data) => {}} keyname="nama-Ibu" dataType="text" placeholder="Masukkan nama" />
                         <InputComponent name="NIK Ibu" onChange={(data) => {}} keyname="nik-Ibu" dataType="number" placeholder="Masukkan NIK" />
-                        <DropdownComponent data={['Belum Kawin', 'Kawin', 'Cerai Mati', 'Cerai Hidup']} label="Status Perkawinan Sebelumnya" onChange={() => {}} placeholder="Pilih jenis" />
+                        <DropdownComponent getDropdownStatus={() => {}} data={['Belum Kawin', 'Kawin', 'Cerai Mati', 'Cerai Hidup']} label="Status Perkawinan Sebelumnya" onChange={() => {}} placeholder="Pilih jenis" />
                         <CounterComponent label="Pernikahan Ke" onChange={handleCounterValue} />
                     </div>
                     <div className="pt-10 flex justify-end px-4">
@@ -268,7 +268,8 @@ export function DataPerkawinanForm({ label, formTitle }: Partial<PelaporFormProp
                 <div className="py-3">
                     <div className="grid sm:grid-cols-2 grid-cols-1 gap-x-5 sm:gap-y-7 gap-y-4 px-4">
                         <DatePickerComponent label="Tanggal Perkawinan" getToggleStatus={() => {}} onChange={() => {}} placeholder="Pilih tanggal" />
-                        <DropdownComponent
+                        <DropdownComponent 
+                            getDropdownStatus={() => {}}
                             label="Agama"
                             data={['Hindu', 'Islam', 'Kristen', 'Katholik', 'Buddha', 'Konghucu']}
                             placeholder="Pilih agama"
@@ -484,6 +485,123 @@ export function DataAdopsiAnakForm({ label, formTitle, buttonName = '' }: Pelapo
                         <InputComponent keyname="no-penetapan" name="Nomor Penetapan Pengadilan" onChange={() => {}} placeholder="Masukkan nomor" dataType="text" />
                         <InputComponent keyname="nama-lembaga-pengadilan" name="Lembaga Penetapan Pengadilan" onChange={() => {}} placeholder="Masukkan nama" dataType="text" />
                         <InputComponent keyname="tmp-lembaga-pengadilan" name="Tempat Lembaga Pengadilan" onChange={() => {}} placeholder="Masukkan nama" dataType="text" />
+                    </div>
+                    <div className="pt-10 flex justify-end">
+                        <Button 
+                            onClick={() => {
+                                setIsSubmitted(true);
+                                setModalOpen(false);
+                            }} 
+                            className={'bg-sky-600 text-white px-4 py-2 cursor-pointer'} size={'md'} variant={'primary'}
+                        >
+                            Simpan
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
+
+            {/* Tampilan button */}
+            <div className="grid sm:grid-cols-2 grid-cols-1 border-b-2 border-gray-300">
+                <div className="h-16 flex items-center">
+                    <h1>{label}</h1>
+                </div>
+                <div className="h-16 flex items-center">
+                    {(selectedNama && isSubmitted) ? (
+                        <div className="flex space-x-4">
+                            <p className="font-xsemibold text-sky-600">{selectedNama}</p>
+                            <SquarePen />
+                        </div>
+                    ) : (
+                        <Button onClick={() => setModalOpen(true)} className={'border-2 cursor-pointer select-none w-[250px] hover:bg-sky-600 hover:text-white border-sky-600 px-6 py-2 rounded-md text-sky-600 transitio'} size={'md'} variant={'primary'}>
+                            <Plus />
+                            Tambah {buttonName ? buttonName: label}
+                        </Button>
+                    )}
+                </div>
+            </div>
+        </>
+    )
+}
+
+
+export function PembetulanAktaForm({ label, formTitle, buttonName = '' }: PelaporFormProps) {
+    const [isModalOpen, setModalOpen] = useState<boolean>(false);
+    const [selectedNama, setSelectedNama] = useState<string>('');
+    const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+
+    return (
+        <>
+            {/* Modal */}
+            <Modal isOpen={isModalOpen} onClose={() => {setModalOpen(false)}} title={formTitle} >
+                <div className="py-3">
+                    <div className="grid sm:grid-cols-2 grid-cols-1 gap-x-5 gap-y-7 px-4">
+                        <InputComponent keyname="nama" name="Nomor Akta yang Dibetulkan" onChange={() => {}} placeholder="Masukkan nomor" />
+                        <InputComponent keyname="nik" name="Nama Ayah" onChange={(data) => {setSelectedNama(data)}} placeholder="Masukkan nama" />
+                        <InputComponent keyname="kk" name="NIK Ayah" onChange={() => {}} placeholder="Masukkan NIK" />
+                        <InputComponent keyname="nama ibu" name="Nama Ibu" onChange={() => {}} placeholder="Masukkan nama" />
+                        <InputComponent keyname="nik ibu" name="NIK Ibu" onChange={() => {}} placeholder="Masukkan NIK" />
+                    </div>
+                    <div className="pt-10 flex justify-end">
+                        <Button 
+                            onClick={() => {
+                                setIsSubmitted(true);
+                                setModalOpen(false);
+                            }} 
+                            className={'bg-sky-600 text-white px-4 py-2 cursor-pointer'} size={'md'} variant={'primary'}
+                        >
+                            Simpan
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
+
+            {/* Tampilan button */}
+            <div className="grid sm:grid-cols-2 grid-cols-1 border-b-2 border-gray-300">
+                <div className="h-16 flex items-center">
+                    <h1>{label}</h1>
+                </div>
+                <div className="h-16 flex items-center">
+                    {(selectedNama && isSubmitted) ? (
+                        <div className="flex space-x-4">
+                            <p className="font-xsemibold text-sky-600">{selectedNama}</p>
+                            <SquarePen />
+                        </div>
+                    ) : (
+                        <Button onClick={() => setModalOpen(true)} className={'border-2 cursor-pointer select-none w-[250px] hover:bg-sky-600 hover:text-white border-sky-600 px-6 py-2 rounded-md text-sky-600 transitio'} size={'md'} variant={'primary'}>
+                            <Plus />
+                            Tambah {buttonName ? buttonName: label}
+                        </Button>
+                    )}
+                </div>
+            </div>
+        </>
+    )
+}
+
+export function PerubahanKewarganegaraanForm({ label, formTitle, buttonName = '' }: PelaporFormProps) {
+    const [isModalOpen, setModalOpen] = useState<boolean>(false);
+    const [selectedNama, setSelectedNama] = useState<string>('');
+    const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+
+    return (
+        <>
+            {/* Modal */}
+            <Modal isOpen={isModalOpen} onClose={() => {setModalOpen(false)}} title={formTitle} >
+                <div className="py-3">
+                    <div className="grid sm:grid-cols-2 grid-cols-1 gap-x-5 gap-y-7 px-4">
+                        <InputComponent keyname="nama" name="Kewarganegaraan Baru" onChange={() => {}} placeholder="Masukkan nomor" />
+                        <InputComponent keyname="nik" name="Nomor Akta Kelahiran" onChange={() => {}} placeholder="Masukkan nama" />
+                        <InputComponent keyname="kk" name="Nomor Akta Perkawinan" onChange={() => {}} placeholder="Masukkan NIK" />
+                        <InputComponent keyname="nama ibu" name="Nama Suami atau Istri" onChange={() => {}} placeholder="Masukkan nama" />
+                        <InputComponent keyname="nik ibu" name="NIK Suami atau Istri" dataType="number" onChange={() => {}} placeholder="Masukkan NIK" />
+                        <InputComponent keyname="nik ibu" name="Nomor Paspor" dataType="number" onChange={() => {}} placeholder="Masukkan nomor" />
+                        <InputComponent keyname="nik ibu" name="Nomor Afidavit" onChange={() => {}} placeholder="Masukkan nomor" />
+                        <InputComponent keyname="nik ibu" name="Nomor Keputusan Presiden" onChange={() => {}} placeholder="Masukkan nomor" />
+                        <InputComponent keyname="nik ibu" name="Nomor Berita Acara Sumpah" onChange={() => {}} placeholder="Masukkan nomor" />
+                        <InputComponent keyname="nik ibu" name="Nama Jabatan yang Menerbitkan" onChange={() => {}} placeholder="Masukkan nama" />
+                        <DatePickerComponent getToggleStatus={() => {}} label="Tanggal diterbitkan" onChange={() => {}} placeholder="Pilih tanggal" />
+                        <InputComponent keyname="nik ibu" name="Nomor Keputusan Menteri" onChange={() => {}} placeholder="Masukkan nomor" />
+                        <DatePickerComponent getToggleStatus={() => {}} label="Tanggal terbit keputusan" onChange={() => {}} placeholder="Pilih tanggal" />
                     </div>
                     <div className="pt-10 flex justify-end">
                         <Button 

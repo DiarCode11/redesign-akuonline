@@ -204,7 +204,8 @@ export default function DataPribadiSection({ title, defaultData = defaultValue, 
                         }))
                     }}
                 />
-                <DropdownComponent
+                <DropdownComponent 
+                    getDropdownStatus={() => {}}
                     label="Hubungan Dalam Keluarga"
                     data={hubunganKeluarga}
                     defaultData={defaultData.status}
@@ -273,7 +274,8 @@ export default function DataPribadiSection({ title, defaultData = defaultValue, 
                         }))
                     }}
                 />
-                <DropdownComponent
+                <DropdownComponent 
+                    getDropdownStatus={() => {}}
                     label="Agama"
                     data={['Hindu', 'Islam', 'Kristen', 'Katholik', 'Buddha', 'Konghucu']}
                     defaultData={isDataNull() ? "" : "Hindu"}
@@ -295,7 +297,8 @@ export default function DataPribadiSection({ title, defaultData = defaultValue, 
                         }))
                     }}
                 />
-                <DropdownComponent
+                <DropdownComponent 
+                    getDropdownStatus={() => {}}
                     label="Pendidikan Terakhir"
                     data={pendidikanList}
                     defaultData={isDataNull() ? "" : "D4/S1"}
@@ -306,7 +309,8 @@ export default function DataPribadiSection({ title, defaultData = defaultValue, 
                         }))
                     }}
                 />
-                <DropdownComponent
+                <DropdownComponent 
+                    getDropdownStatus={() => {}}
                     label="Pekerjaan"
                     data={pilihan_pekerjaan_kk}
                     defaultData={isDataNull() ? "" : "Pelajar / Mahasiswa"}

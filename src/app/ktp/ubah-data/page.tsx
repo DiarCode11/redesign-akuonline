@@ -193,7 +193,7 @@ export default function EditKTP() {
                         {checkboxStatus.agama && (
                             <div className="grid sm:grid-cols-2 grid-cols-1 pl-3 ml-1.5 my-3 border-l border-gray-500 gap-4">
                                 <InputComponent keyname="currentAgama" name="Sebelumnya" onChange={() => {}} placeholder="" disabled={true} defaultValue="Hindu" />
-                                <DropdownComponent data={[]} label="Menjadi" onChange={() => {}} placeholder="Pilih Agama"/>
+                                <DropdownComponent getDropdownStatus={() => {}} data={[]} label="Menjadi" onChange={() => {}} placeholder="Pilih Agama"/>
                             </div>
                         )}
                         <CheckboxComponent id="Alamat" isChecked={(status) => {setCheckboxStatus(prev => ({...prev, alamat: !status}))}} label="Alamat" />
@@ -201,19 +201,19 @@ export default function EditKTP() {
                             <>
                                 <div className="grid sm:grid-cols-2 grid-cols-1 pl-3 ml-1.5 my-3 border-l border-gray-500 gap-4">
                                     <InputComponent keyname="currentName" name="Provinsi Sebelumnya" onChange={() => {}} placeholder="" defaultValue="BALI"  disabled={true} />
-                                    <DropdownComponent data={[]} label="Provinsi Saat Ini" onChange={() => {}} placeholder="Pilih Provinsi"/>
+                                    <DropdownComponent getDropdownStatus={() => {}} data={[]} label="Provinsi Saat Ini" onChange={() => {}} placeholder="Pilih Provinsi"/>
                                     <span className="w-full h-1 sm:col-span-2 border-gray-200 border-b"></span>
                                     
                                     <InputComponent keyname="currentName" name="Kabupaten Sebelumnya" onChange={() => {}} placeholder="" defaultValue="BANGLI" disabled={true} />
-                                    <DropdownComponent data={[]} label="Kabupaten Saat Ini" onChange={() => {}} placeholder="Pilih Kabupaten"/>
+                                    <DropdownComponent getDropdownStatus={() => {}} data={[]} label="Kabupaten Saat Ini" onChange={() => {}} placeholder="Pilih Kabupaten"/>
                                     <span className="w-full h-1 sm:col-span-2 border-gray-200 border-b"></span>
                                     
                                     <InputComponent keyname="currentName" name="Kecamatan Sebelumnya" onChange={() => {}} placeholder="" defaultValue="KINTAMANI" disabled={true} />
-                                    <DropdownComponent data={[]} label="Kecamatan Saat Ini" onChange={() => {}} placeholder="Pilih Kecamatan"/>
+                                    <DropdownComponent getDropdownStatus={() => {}} data={[]} label="Kecamatan Saat Ini" onChange={() => {}} placeholder="Pilih Kecamatan"/>
                                     <span className="w-full h-1 sm:col-span-2 border-gray-200 border-b"></span>
                                     
                                     <InputComponent keyname="currentName" name="Desa Sebelumnya" onChange={() => {}} placeholder="" defaultValue="YANGAPI" disabled={true} />
-                                    <DropdownComponent data={[]} label="Desa Saat Ini" onChange={() => {}} placeholder="Pilih Desa"/>
+                                    <DropdownComponent getDropdownStatus={() => {}} data={[]} label="Desa Saat Ini" onChange={() => {}} placeholder="Pilih Desa"/>
                                     <span className="w-full h-1 sm:col-span-2 border-gray-200 border-b"></span>
                                     
                                     <InputComponent keyname="currentName" name="RT/RW/Banjar Dinas Sebelumnya" onChange={() => {}} placeholder="" defaultValue="QWERTY" disabled={true} />
@@ -226,14 +226,14 @@ export default function EditKTP() {
                         {checkboxStatus.perkawinan && (
                             <div className="grid sm:grid-cols-2 grid-cols-1 pl-3 ml-1.5 my-3 border-l border-gray-500 gap-4">
                                 <InputComponent keyname="currentName" name="Sebelumnya" onChange={() => {}} placeholder="" defaultValue="Belum Kawin" disabled={true}/>
-                                <DropdownComponent data={[]} label="Menjadi" onChange={() => {}} placeholder="Pilih status" />
+                                <DropdownComponent getDropdownStatus={() => {}} data={[]} label="Menjadi" onChange={() => {}} placeholder="Pilih status" />
                             </div>
                         )}
                         <CheckboxComponent id="Pekerjaan" isChecked={(status) => {setCheckboxStatus(prev => ({...prev, pekerjaan: !status}))}} label="Pekerjaan" />
                         {checkboxStatus.pekerjaan && (
                             <div className="grid sm:grid-cols-2 grid-cols-1 pl-3 ml-1.5 my-3 border-l border-gray-500 gap-4">
                                 <InputComponent keyname="currentName" name="Sebelumnya" onChange={() => {}} placeholder="" defaultValue="Belum/Tidak Bekerja" disabled={true}/>
-                                <DropdownComponent data={[]} label="Menjadi" onChange={() => {}} placeholder="Pilih jenis pekerjaan" />
+                                <DropdownComponent getDropdownStatus={() => {}} data={[]} label="Menjadi" onChange={() => {}} placeholder="Pilih jenis pekerjaan" />
                             </div>
                         )}
                         {jenisPerubahanSelected && (

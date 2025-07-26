@@ -30,19 +30,20 @@ const menus = [
     id: "akta"
   },
   {
-    name: "Layanan Surat Keterangan",
-    icon: "Letter.svg",
-    color: "#238BCB",
-    size: 60,
-    id: "surat"
-  },
-  {
     name: "Kartu Identitas Anak",
     icon: "KIAIcon.svg",
     color: "#FF657E",
     size: 80,
     id: "KIA"
   },
+  {
+    name: "Layanan Surat Keterangan",
+    icon: "Letter.svg",
+    color: "#238BCB",
+    size: 60,
+    id: "surat"
+  },
+
 ]
 
 const KK_menus = [
@@ -221,10 +222,10 @@ export default function ServicesComponent() {
 
       <div className="h-full rounded-t-[50px] bg-white py-10 md:px-16 px-5">
         <h1 className="md:text-2xl text-lg font-semibold w-full text-center pb-10 text-black/45">Pilih Layanan Kependudukan</h1>
-        <div className="grid sm:grid-cols-4 md:grid-cols-5 grid-cols-2 md:gap-x-10 gap-x-4 gap-y-10 relative">
+        <div className="grid sm:grid-cols-4 md:grid-cols-5 grid-cols-2 md:gap-x-5 gap-x-2 gap-y-10 relative">
           {menus.map((menu, index) => (
-            <div onClick={() => setOpenModal(menu.id)} key={index} className={`rounded-4xl shadow-lg select-none hover:cursor-pointer hover:-translate-y-3 hover:scale-105 duration-300 transform transition-all`} style={{ backgroundColor: menu.color }}>
-              {index === 2 || index === 3 ? (
+            <div onClick={() => setOpenModal(menu.id)} key={index} className={`rounded-4xl shadow-lg select-none hover:cursor-pointer hover:-translate-y-3 hover:scale-105 duration-300 transform transition-all w-full`} style={{ backgroundColor: menu.color }}>
+              {index === 2 || index === 4 ? (
                 <div className="flex flex-col hover: justify-center items-center py-5 h-48 ">
                   <Image
                     src={menu.icon}
@@ -242,7 +243,7 @@ export default function ServicesComponent() {
                     width={menu.size}
                     height={menu.size}
                   />
-                  <p className="text-center font-semibold text-white px-4">{menu.name}</p>
+                  <p className="text-center font-semibold text-white w-[150px]">{menu.name}</p>
                 </div>
               )}
             </div>

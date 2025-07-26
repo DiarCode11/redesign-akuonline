@@ -25,9 +25,14 @@ export default function RootLayout({ children }) {
             />
         </div>
       </nav>
-      <main className="bg-slate-200 pt-28 min-h-full z-0">
+      <main className="bg-slate-200 pt-28 z-0">
         {children}
       </main>
+      <footer className="flex items-end">
+        <div className="bg-white py-4 px-10 text-center text-sm text-gray-600">
+          &copy; {new Date().getFullYear()} Aku Online-NG. All rights reserved.
+        </div>
+      </footer>
     </>
   );
 }

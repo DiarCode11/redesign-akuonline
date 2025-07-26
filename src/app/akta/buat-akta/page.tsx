@@ -34,7 +34,9 @@ export default function BuatAkta() {
         'Adopsi Anak' : <AktaForm type="Adopsi Anak" />,
         'Perceraian': <AktaForm type="Perceraian" />,
         "Pengakuan Anak": <AktaForm type="Pengakuan Anak" />,
-        "Pengesahan Anak": <AktaForm type="Pengesahan Anak" />
+        "Pengesahan Anak": <AktaForm type="Pengesahan Anak" />,
+        "Pembetulan Akta": <AktaForm type="Pembetulan Akta" />,
+        "Perubahan Kewarganegaraan": <AktaForm type="Perubahan Kewarganegaraan" />
     }
 
     const nextToStep = useCallback((value: number) => {
