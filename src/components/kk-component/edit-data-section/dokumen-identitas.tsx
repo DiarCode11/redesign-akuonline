@@ -84,6 +84,7 @@ export default function DokumenIdentitasSection({ title, isWNA = false, addMode 
                 )}
                 {(isWNA || dokumenIdentitas.paspor == true) && (
                     <DatePickerComponent
+                        getToggleStatus={() => {}}
                         label="Tanggal Berakhir Paspor"
                         onChange={(data) => {
                             setDokumenIdentitas(prev => ({
@@ -159,6 +160,7 @@ export default function DokumenIdentitasSection({ title, isWNA = false, addMode 
                             }}
                         />
                         <DatePickerComponent
+                            getToggleStatus={() => {}}
                             label={`Tanggal Terbit ${dokumenIdentitas.dokumen_ijin_tinggal === 'KITAP' ? 'KITAP': 'KITAS'}`}
                             onChange={(data) => {
                                 setDokumenIdentitas(prev => ({
@@ -167,6 +169,7 @@ export default function DokumenIdentitasSection({ title, isWNA = false, addMode 
                             }}
                         />
                         <DatePickerComponent
+                            getToggleStatus={() => {}}
                             label={`Tanggal Akhir ${dokumenIdentitas.dokumen_ijin_tinggal === 'KITAP' ? 'KITAP': 'KITAS'}`}
                             onChange={(data) => {
                                 setDokumenIdentitas(prev => ({
@@ -186,6 +189,7 @@ export default function DokumenIdentitasSection({ title, isWNA = false, addMode 
                             }}
                         />
                         <DatePickerComponent
+                            getToggleStatus={() => {}}
                             label="Tanggal Datang Pertama"
                             onChange={(data) => {
                                 setDokumenIdentitas(prev => ({

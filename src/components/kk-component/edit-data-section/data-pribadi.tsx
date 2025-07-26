@@ -264,6 +264,7 @@ export default function DataPribadiSection({ title, defaultData = defaultValue, 
                     }}
                 />
                 <DatePickerComponent
+                    getToggleStatus={() => {}}
                     label="Tanggal Lahir"
                     defaultDate={isDataNull() ? "" : "1999-12-12"}
                     onChange={(data) => {

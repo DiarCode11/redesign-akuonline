@@ -44,6 +44,7 @@ export default function DataPerkawinanSection({ title, addMode = false, onChange
                 (
                     <>
                         <DatePickerComponent
+                            getToggleStatus={() => {}}
                             label={`Tanggal ${dataPerkawinan.status_perkawinan === 'Kawin' ? 'Perkawinan' : 'Perceraian'}`}
                             onChange={(data) => {
                                 if (dataPerkawinan.status_perkawinan === 'Kawin') {
