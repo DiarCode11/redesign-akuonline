@@ -3,8 +3,8 @@ import { ArrowLeft, Check, ChevronDown, Download, Pencil, SquarePen, Trash2 } fr
 import Accordion from "@/components/accordion";
 import { VILLAGE_DATA } from "@/lib/config";
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import Modal from "@/components/modal";
 import Link from "next/link";
 import DataPribadiSection from "@/components/kk-component/add-data-section/data-pribadi";
@@ -22,6 +22,7 @@ import { DataPerkawinanProps } from "@/components/kk-component/add-data-section/
 import { KondisiKhususProps } from "@/components/kk-component/add-data-section/kondisi-khusus";
 import { DataOrangtuaProps } from "@/components/kk-component/add-data-section/data-orangtua";
 import FileInput from "@/components/form-component/fileinput-component";
+import { ServiceProps, saveToLocalStorage } from "@/lib/save-to-local-storage";
 
 type dataKKProps = {
     jenis_data: string,
@@ -46,17 +47,29 @@ export default function NewKK() {
     const [villages, setVillages] = useState<string[]>([]);
     const [isAllDocDownloaded, setAllDocDownloaded] = useState<boolean>(false);
 
+    const router = useRouter();
+
     function submitData() {
         setAccordionActive(2);
         setIsAddDataModalOpen(false);
     }
 
-    function saveData() {
-        const updatedList = [...dataKKList, formData];
-        setDataKKList(updatedList);
-        sessionStorage.setItem('newDataKK', JSON.stringify(updatedList));
+    function addDataToList() {
+        setDataKKList([...dataKKList, formData]);
         setFormData({});
         setIsAddDataModalOpen(false);
+    }
+
+    function saveData() {
+        const datetimeNow = new Date(); 
+        const new_data : ServiceProps = {
+            serviceName: "Buat Kartu Keluarga",
+            created_at: datetimeNow,
+            data: formData
+        };
+
+        saveToLocalStorage(new_data);
+        router.push('/');
     }
 
     function nextToStep(value: number) {
@@ -172,7 +185,7 @@ export default function NewKK() {
                     <DataOrangtuaSection title="E. Data Orang Tua" onChange={handleCallback} />
                     <div className="flex justify-end pt-5">
                         {/* disabled={!buatFormulirValid()} nanti tambahkan disini */}
-                        <Button disabled={!isAddFormComplete()} onClick={() => saveData()} variant="primary" size={"md"} className={"bg-sky-600 text-white px-4 py-2"}>
+                        <Button disabled={!isAddFormComplete()} onClick={() => addDataToList()} variant="primary" size={"md"} className={"bg-sky-600 text-white px-4 py-2"}>
                             Simpan
                         </Button>
                     </div>
@@ -196,7 +209,7 @@ export default function NewKK() {
                         }
                     }}
                 >
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 pt-4 gap-6">
                         <div className="sm:col-span-2">
                             <RadioComponent 
                                 name={"Jenis Data Keluarga"} 
@@ -404,11 +417,9 @@ export default function NewKK() {
                             <FileInput onChange={() => {}} id="perubahan_elemen" label="Pernyataan Perubahan Elemen" />
                         </div>
                         <div className="pt-10 flex justify-end">
-                            <Link href={"/"}>
-                                <button onClick={() => nextToStep(3)} className="flex gap-2 transition-all duration-500 ease-in-out items-center cursor-pointer bg-sky-600 px-4 py-2 rounded-md text-white sm:text-base text-sm">
-                                    <span>Simpan</span>
-                                </button>
-                            </Link>
+                            <button onClick={() => saveData()} className="flex gap-2 transition-all duration-500 ease-in-out items-center cursor-pointer bg-sky-600 px-4 py-2 rounded-md text-white sm:text-base text-sm">
+                                <span>Simpan</span>
+                            </button>
                         </div>
                     </>
                 </Accordion>

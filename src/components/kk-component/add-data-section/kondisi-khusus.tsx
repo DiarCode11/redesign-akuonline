@@ -25,6 +25,7 @@ export default function KondisiKhususSection({ title, onChange } : KondisiKhusus
     ];
 
     const jenisKelainan = [
+        "Tidak Ada",
         "Tuna Daksa",
         "Tuna Netra",
         "Tuna Rungu",

@@ -32,7 +32,6 @@ export async function POST(req: NextRequest) {
             path: '/',
             secure: false
         });
-
         return response;
     }
 
