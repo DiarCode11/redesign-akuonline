@@ -74,7 +74,7 @@ export default function Login() {
                         <span onClick={togglePasswordVisibility} className="absolute cursor-pointer top-2 right-3 text-slate-400">
                             {showPassword ? <EyeIcon /> : <EyeOff />}
                         </span>
-                        <span className="text-sm absolute -bottom-8 left-0">Lupa Password?</span>
+                        <Link href={"/forgot-password"} className="text-sm absolute -bottom-8 left-0">Lupa Password?</Link>
                     </div>
 
                     <Button size={'md'} variant={'primary'} disabled={disableButton} type={"submit"} className={"bg-red-500 py-3 text-white mt-10 cursor-pointer hover:bg-red-600 transition-colors ease-in-out duration-500"}>
