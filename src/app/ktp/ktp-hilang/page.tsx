@@ -146,7 +146,7 @@ export default function KTPHilang() {
                         }
                     }}
                 >
-                    <h3 className="text-sm py-4 text-gray-400">Lakukan upload file yang sudah diisi tandatangan/materai</h3>
+                    <h3 className="text-sm py-4 text-gray-400">Lakukan upload file yang sudah diisi tandatangan/materai. Anda harus mengupload file dalam bentuk pdf</h3>
                     <div className="flex flex-col space-y-3">
                         <FileInput onChange={() => {}} id="form_pendaftaran" label="Formulir Pendaftaran Peristiwa Kependudukan" />
                         <FileInput onChange={() => {}} id="pendaftaran_peristiwa" label="Surat Keterangan Kehilangan dari Kepolisian" />

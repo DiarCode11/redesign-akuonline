@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import InputComponent from "@/components/form-component/input-component";
 import FileInput from "@/components/form-component/fileinput-component";
 import { Button } from "@/components/ui/button";
 
@@ -15,8 +16,16 @@ export default function KehilanganAkta() {
                 <h1 className="font-semibold text-xl">Kehilangan Akta</h1>
             </div>
             <div className="bg-white p-5 rounded-md">
-                <h2 className="font-medium select-none pb-4">Upload Dokumen</h2>
-                <FileInput onChange={() => {}} id="perubahan_elemen" label="Scan Kartu Keluarga" />
+                <h2 className="font-medium select-none pb-4"></h2>
+                <label htmlFor="nik" className="block">
+                    NIK
+                </label>
+                <input
+                    id="nik"
+                    type="text"
+                    className={`mt-1 p-2 w-full h-9 border border-gray-300 text-sm rounded-md mb-2`}
+                />
+                <FileInput onChange={() => {}} id="perubahan_elemen" label="Scan Kartu Keluarga (Pdf)" />
                 <div className="flex justify-end pt-8">
                     <Link href={'/'}>
                         <Button size={'md'} variant={'primary'} className="bg-sky-600 text-white px-4 py-2">

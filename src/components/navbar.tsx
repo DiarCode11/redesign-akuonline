@@ -75,7 +75,7 @@ export default function Navbar() {
                                         <span className="bg-yellow-500 text-white px-2 text-sm font-medium rounded absolute bottom-2 right-5">Diproses</span>
                                     </div>
                                 )) : (
-                                    <span>Tidak ada layanan aktif</span>
+                                    <span>Tidak ada riwayat pengajuan</span>
                                 )}
                             </div>
                         </div>

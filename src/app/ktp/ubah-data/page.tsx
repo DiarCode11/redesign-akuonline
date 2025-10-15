@@ -262,7 +262,7 @@ export default function EditKTP() {
                     }}
                 >
                     <div>
-                        <h3 className="text-sm py-4 text-gray-400">Unduh Formulir ini dan lakukan pengisian tandatangan/materai</h3>
+                        <h3 className="text-sm py-4 text-gray-400">Unduh Formulir ini dan lakukan pengisian tandatangan/materai. Anda harus mengupload file dalam bentuk pdf</h3>
                         <div className="flex flex-col space-y-1">
                             <span className="flex items-center space-x-2">
                                 {isAllDocDownloaded ? (<Check size={18} />) : (<Download size={18} />)}

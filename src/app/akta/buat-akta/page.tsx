@@ -218,7 +218,7 @@ export default function BuatAkta() {
                         }
                     }}
                 >
-                    <h3 className="text-sm py-4 text-gray-400">Lakukan upload file yang sudah diisi tandatangan/materai</h3>
+                    <h3 className="text-sm py-4 text-gray-400">Lakukan upload file yang sudah diisi tandatangan/materai. Anda harus mengupload file dalam bentuk pdf</h3>
                     <div className="flex flex-col space-y-3">
                         <FileInput onChange={() => {}} id="form_isian" label="F-2.01 (Formulir Pencatatan Sipil)" />
                         { (jenisAktaSelected !== 'Pengakuan Anak' && jenisAktaSelected !== 'Adopsi Anak' && jenisAktaSelected !== 'Pengesahan Anak' ) && <FileInput onChange={() => {}} id="form_isian_akta" label="F-2.01 (Formulir Permohonan Penerbitan Akta)" /> }

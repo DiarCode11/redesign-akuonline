@@ -206,7 +206,7 @@ export default function PerubahanKewarganegaraan() {
                         }
                     }}
                 >
-                    <h3 className="text-sm py-4 text-gray-400">Lakukan upload file yang sudah diisi tandatangan/materai</h3>
+                    <h3 className="text-sm py-4 text-gray-400">Lakukan upload file yang sudah diisi tandatangan/materai. Anda harus mengupload file dalam bentuk pdf</h3>
                     <div className="flex flex-col space-y-3">
                         <FileInput onChange={() => {}} id="form_1" label="F-2.01 (Formulir Pencatatan Sipil)" />
                         <FileInput onChange={() => {}} id="form_2" label="Scan Putusan Menteri" />
