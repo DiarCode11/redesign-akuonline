@@ -87,7 +87,7 @@ const KTP_menus = [
   },
   {
     name: "Perubahan data",
-    icon: "addKTP.svg",
+    icon: "Frame 3.svg",
     color: "#71C76C",
     link: "/ktp/ubah-data",
     size: 50
