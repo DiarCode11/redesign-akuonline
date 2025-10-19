@@ -10,6 +10,7 @@ import { Check } from "lucide-react";
 import { Download } from "lucide-react";
 import FileInput from "@/components/form-component/fileinput-component";
 import { CircleAlert } from "lucide-react";
+import { saveToLocalStorage, ServiceProps } from "@/lib/save-to-local-storage";
 
 
 export default function BuatKTP() {
@@ -25,6 +26,18 @@ export default function BuatKTP() {
     const [currentNIK, setCurrentNIK] = useState<string>('');
     const [scheduleCreated, setScheduleCreated] = useState<boolean>(false);
 
+
+    function saveData() {
+        const detail_data: ServiceProps = {
+            created_at: new Date(),
+            serviceName: "Pembuatan KTP",
+            data: {
+                NIKPemohon, nama_lengkap: "I Wayan Yoga Sastrawan"
+            }
+        }
+
+        saveToLocalStorage(detail_data)
+    }
 
     function accordionStatus(status: boolean) {
         if (!status) {
@@ -233,16 +246,19 @@ export default function BuatKTP() {
                         { scheduleCreated ? (
                             <Link href={'/'}>
                                 <Button 
+                                    onClick={() => saveData()}
                                     className={'bg-sky-600 text-white px-4 py-2'} size={'md'} variant={'primary'}>
                                     Selesai
                                 </Button>
                             </Link>
                         ) : (
-                            <Button 
-                                onClick={() => setScheduleCreated(true)}
-                                className={'bg-sky-600 text-white px-4 py-2'} size={'md'} variant={'primary'}>
-                                Dowload Bukti Pendaftaran
-                            </Button>
+                            <>
+                                <Button 
+                                    onClick={() => setScheduleCreated(true)}
+                                    className={'bg-sky-600 text-white px-4 py-2'} size={'md'} variant={'primary'}>
+                                    Dowload Bukti Pendaftaran
+                                </Button>
+                            </>
                         )}
                     </div>
                 </Accordion>

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 type DropdownComponentProps = {
     label : string,
     data : string[],
+    className?: string,
     defaultData? : string,
     placeholder: string,
     errorMsg?: string,
@@ -12,7 +13,7 @@ type DropdownComponentProps = {
 }
 
 
-export default function DropdownComponent({ label, data, defaultData, placeholder, errorMsg, onChange, getDropdownStatus } : DropdownComponentProps) {
+export default function DropdownComponent({ label, data, defaultData, placeholder, errorMsg, onChange, getDropdownStatus, className } : DropdownComponentProps) {
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
     const [item, setItem] = useState<string>('');
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -51,7 +52,7 @@ export default function DropdownComponent({ label, data, defaultData, placeholde
                     <div className="max-h-32 mb-4 overflow-y-auto w-full z-10 absolute shadow border border-neutral-500 rounded-md left-0 top-10 bg-white text-gray-400">
                         <ul className="h-full">
                             {data.map((item, index) => (
-                                <li onClick={() => selectItem(item)} className="py-1 px-2 cursor-pointer rounded-md hover:bg-gray-100 text-gray-400" key={index}>{item}</li>
+                                <li onClick={() => selectItem(item)} className={`py-1 px-2 cursor-pointer rounded-md hover:bg-gray-100 text-gray-400 ${className}`} key={index}>{item}</li>
                             ))}
                         </ul>
                     </div>

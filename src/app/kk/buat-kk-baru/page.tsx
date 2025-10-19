@@ -22,8 +22,9 @@ import { DataPerkawinanProps } from "@/components/kk-component/add-data-section/
 import { KondisiKhususProps } from "@/components/kk-component/add-data-section/kondisi-khusus";
 import { DataOrangtuaProps } from "@/components/kk-component/add-data-section/data-orangtua";
 import FileInput from "@/components/form-component/fileinput-component";
-import { ServiceProps, saveToLocalStorage } from "@/lib/save-to-local-storage";
+import { ServiceProps, deleteDataTemp, deleteDataTempByIdx, getDataTempAll, getDataTempByIdx, saveToLocalStorage, saveToLocalStorageTemp, updateDataTempById } from "@/lib/save-to-local-storage";
 
+type formDataProps = DataPribadiProps & DokumenIdentitasType & DataPerkawinanProps & KondisiKhususProps & DataOrangtuaProps
 type dataKKProps = {
     jenis_data: string,
     kecamatan: string,
@@ -32,10 +33,10 @@ type dataKKProps = {
     kode_pos: string,
     diwakilkan: boolean | null,
     nama_perwakilan?: string,
-    nik_perwakilan?: string
+    nik_perwakilan?: string,
+    data_keluarga?: formDataProps[]
 }
 
-type formDataProps = DataPribadiProps & DokumenIdentitasType & DataPerkawinanProps & KondisiKhususProps & DataOrangtuaProps
 
 export default function NewKK() {
     const [familyData, setFamilyData] = useState<Partial<dataKKProps>>({});
@@ -44,6 +45,13 @@ export default function NewKK() {
     const [currentStep, setCurrentStep] = useState<number>(1);
     const [dataKKList, setDataKKList] = useState<Partial<formDataProps>[]>([]);
     const [isAddDataModalOpen, setIsAddDataModalOpen] = useState<boolean>(false);
+    const [isEditDataModalOpen, setIsEditDataModalOpen] = useState<boolean>(false);
+    const [OldData, setOldData] = useState<formDataProps>(null);
+    const [EditedData, setEditedData] = useState<formDataProps>(null);
+
+    const [isDelConfirmModalOpen, setDelConfirmModalOpen] = useState<boolean>(false);
+    const [indexToDelete, setIndexToDelete] = useState<number>(null);
+    const [indexToEdit, setIndexToEdit] = useState<number>(null);
     const [villages, setVillages] = useState<string[]>([]);
     const [isAllDocDownloaded, setAllDocDownloaded] = useState<boolean>(false);
 
@@ -54,23 +62,83 @@ export default function NewKK() {
         setIsAddDataModalOpen(false);
     }
 
+    useEffect(() => {
+        return () => {
+            // Hapus local storage temp ketika komponen ditinggalkan
+            deleteDataTemp();
+        }
+    }, [])
+
+    function extractDataPribadi(data: formDataProps): DataPribadiProps {
+        const keys = Object.keys(data).filter(key =>
+            key in ({} as DataPribadiProps)
+        ) as (keyof DataPribadiProps)[];
+
+        return keys.reduce((acc, key) => {
+            acc[key] = data[key];
+            return acc;
+        }, {} as DataPribadiProps);
+    }
+
+
     function addDataToList() {
-        setDataKKList([...dataKKList, formData]);
+        saveToLocalStorageTemp(formData as any);
         setFormData({});
         setIsAddDataModalOpen(false);
+        const listKK = getDataTempAll()
+        setDataKKList(listKK);
+    }
+
+    function DeleteDataFromList(){
+        if (indexToDelete !== null) {
+            deleteDataTempByIdx(indexToDelete);
+            const listKK = getDataTempAll()
+            setDataKKList(listKK);
+        }
+
+        setDelConfirmModalOpen(false)
+    }
+
+    function ConfirmDelete(index: number) {
+        setDelConfirmModalOpen(true)
+        setIndexToDelete(index);
+    }
+
+    function EditData(index: number) {
+        setIsEditDataModalOpen(true)
+        setIndexToEdit(index);
+
+        const data: formDataProps = getDataTempByIdx(index)
+        setOldData(data)
+    }
+
+    function SaveEditedData() {
+        updateDataTempById(indexToEdit, EditedData)
+        setIsEditDataModalOpen(false)
+        const listKK = getDataTempAll()
+        setDataKKList(listKK);
     }
 
     function saveData() {
         const datetimeNow = new Date(); 
-        const new_data : ServiceProps = {
+        const listKK = getDataTempAll();
+
+        // Buat final object tanpa menunggu state
+        const finalData: dataKKProps = {
+            ...familyData,
+            data_keluarga: listKK
+        } as dataKKProps;
+
+        const new_data: ServiceProps = {
             serviceName: "Buat Kartu Keluarga",
             created_at: datetimeNow,
-            data: formData
+            data: finalData
         };
 
         saveToLocalStorage(new_data);
         router.push('/');
     }
+
 
     function nextToStep(value: number) {
         setCurrentStep(Math.max(accordionActive, value));
@@ -88,6 +156,13 @@ export default function NewKK() {
 
     const handleCallback = useCallback((data: Partial<formDataProps>) => {
         setFormData(prev => ({
+            ...prev,
+            ...data
+        }))
+    }, [])
+
+    const handleUpdateData = useCallback((data: Partial<formDataProps>) => {
+        setEditedData(prev => ({
             ...prev,
             ...data
         }))
@@ -171,6 +246,21 @@ export default function NewKK() {
 
     return (
         <div>
+            <Modal title="Hapus record" width="w-[400px]" height="h-[100px]" isOpen={isDelConfirmModalOpen} onClose={() => setDelConfirmModalOpen(false)}>
+                <div className="text-center py-3">
+                    Yakin ingin menghapus record ini?
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                    <Button onClick={() => setDelConfirmModalOpen(false)} variant={"normal"} size={"md"} className={"border py-2 cursor-pointer"}>
+                        Batal
+                    </Button>
+                    <Button onClick={() => DeleteDataFromList()} variant={"primary"} size={"md"} className={"bg-red-600 text-white cursor-pointer"}>
+                        Hapus
+                    </Button>
+                </div>
+            </Modal>
+
+            {/* Modal Create*/}
             <Modal title={"Tambah Data Anggota Keluarga"} isOpen={isAddDataModalOpen} onClose={() => setIsAddDataModalOpen(false)}>
                 <div className="sm:px-3 px-2">
                     {/* Section data pribadi */}
@@ -191,6 +281,29 @@ export default function NewKK() {
                     </div>
                 </div>
             </Modal>
+
+            {/* Modal Update*/}
+            <Modal title={"Ubah Data Anggota Keluarga"} isOpen={isEditDataModalOpen} onClose={() => setIsEditDataModalOpen(false)}>
+                <div className="sm:px-3 px-2">
+                    {/* Section data pribadi */}
+                    <DataPribadiSection defaultValue={OldData} title="A. Data Pribadi" onChange={handleUpdateData} />
+                    <div className="w-full border-gray-400 my-7 border"></div>
+                    <DokumenIdentitasSection defaultValue={OldData} addMode={isAddDataModalOpen} title="B. Dokumen Identitas" isWNA={formData.kewarganegaraan === 'WNA'} onChange={handleUpdateData}/>
+                    <div className="w-full border-gray-400 my-7 border"></div>
+                    <DataPerkawinanSection defaultValue={OldData} title="C. Data Perkawinan" onChange={handleUpdateData} />
+                    <div className="w-full border-gray-400 my-7 border"></div>
+                    <KondisiKhususSection defaultValue={OldData} title="D. Kondisi Khusus" onChange={handleUpdateData}/>
+                    <div className="w-full border-gray-400 my-7 border"></div>
+                    <DataOrangtuaSection defaultValue={OldData} title="E. Data Orang Tua" onChange={handleUpdateData} />
+                    <div className="flex justify-end pt-5">
+                        {/* disabled={!buatFormulirValid()} nanti tambahkan disini */}
+                        <Button onClick={() => SaveEditedData()} variant="primary" size={"md"} className={"bg-sky-600 text-white px-4 py-2"}>
+                            Simpan
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
+
             <div className="flex space-x-6 items-center pb-10">
                 <Link href={"/"}>
                     <ArrowLeft />
@@ -339,8 +452,8 @@ export default function NewKK() {
                                 { item.nama_lengkap} 
                             </div>
                             <div className="flex gap-3">
-                                <Trash2 className="text-black" />
-                                <SquarePen className="text-black" />
+                                <Trash2 onClick={() => ConfirmDelete(index)} className="text-black" />
+                                <SquarePen onClick={() => EditData(index)} className="text-black" />
                             </div>
                         </div>
                     )) }

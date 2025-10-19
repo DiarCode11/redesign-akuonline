@@ -11,10 +11,11 @@ export type DataOrangtuaProps = {
 
 type DataOrangtuaType = {
     title : string
+    defaultValue? : Partial<DataOrangtuaProps>
     onChange : (value : Partial<DataOrangtuaProps>) => void
 }
 
-export default function DataOrangtuaSection({ title, onChange } : DataOrangtuaType) {
+export default function DataOrangtuaSection({ title, defaultValue, onChange } : DataOrangtuaType) {
     const [dataOrangtua, setDataOrangtua] = useState<Partial<DataOrangtuaProps>>({})
 
     useEffect(() => {
@@ -28,6 +29,7 @@ export default function DataOrangtuaSection({ title, onChange } : DataOrangtuaTy
                 <InputComponent
                     keyname="nama_ayah"
                     name="Nama Ayah"
+                    defaultValue={defaultValue?.nama_ayah}
                     onChange={(data) => {
                         setDataOrangtua(prev => ({
                             ...prev, nama_ayah: data
@@ -39,6 +41,7 @@ export default function DataOrangtuaSection({ title, onChange } : DataOrangtuaTy
                 <InputComponent
                     keyname="nik_ayah"
                     name="NIK Ayah"
+                    defaultValue={defaultValue?.nik_ayah}
                     onChange={(data) => {
                         setDataOrangtua(prev => ({
                             ...prev, nik_ayah: data
@@ -50,6 +53,7 @@ export default function DataOrangtuaSection({ title, onChange } : DataOrangtuaTy
                 <InputComponent
                     keyname="nama_ibu"
                     name="Nama ibu"
+                    defaultValue={defaultValue?.nama_ibu}
                     onChange={(data) => {
                         setDataOrangtua(prev => ({
                             ...prev, nama_ibu: data
@@ -61,6 +65,7 @@ export default function DataOrangtuaSection({ title, onChange } : DataOrangtuaTy
                 <InputComponent
                     keyname="nik_ibu"
                     name="NIK ibu"
+                    defaultValue={defaultValue?.nik_ibu ?? ''}
                     onChange={(data) => {
                         setDataOrangtua(prev => ({
                             ...prev, nik_ibu: data

@@ -25,13 +25,14 @@ export type DokumenIdentitasType = {
 
 type DokumenIdentitasProps = {
     title : string
-    isWNA? : boolean,
-    addMode: boolean,
+    defaultValue? : Partial<DokumenIdentitasType>
+    isWNA? : boolean
+    addMode: boolean
     onChange : (value: Partial<DokumenIdentitasType>) => void 
 }
 
-export default function DokumenIdentitasSection({ title, isWNA = false, onChange} : DokumenIdentitasProps) {
-    const [dokumenIdentitas, setDokumenIdentitas] = useState<Partial<DokumenIdentitasType>>({});
+export default function DokumenIdentitasSection({ title, isWNA = false, defaultValue = {}, onChange} : DokumenIdentitasProps) {
+    const [dokumenIdentitas, setDokumenIdentitas] = useState<Partial<DokumenIdentitasType>>(defaultValue);
 
     useEffect(() => {
         console.log('Data B: ', dokumenIdentitas)
@@ -46,6 +47,7 @@ export default function DokumenIdentitasSection({ title, isWNA = false, onChange
                     keyname="no_akta_lahir"
                     name="Nomor Akta Lahir"
                     dataType={DataType.Text}
+                    defaultValue={defaultValue?.no_akta_lahir ?? ""}
                     placeholder="Masukkan nomor akta"
                     onChange={(data) => {
                         setDokumenIdentitas(prev => ({
@@ -58,6 +60,7 @@ export default function DokumenIdentitasSection({ title, isWNA = false, onChange
                         cols="grid-cols-2"
                         item={['Ada', 'Tidak ada']}
                         name="Punya paspor?"
+                        defaultItem={defaultValue?.paspor ? 'Ada' : 'Tidak ada'}
                         onChange={(data) => {
                             let data_doc = (data === 'Ada')
                             setDokumenIdentitas(prev => ({
@@ -72,6 +75,7 @@ export default function DokumenIdentitasSection({ title, isWNA = false, onChange
                         name="Nomor Paspor"
                         dataType={DataType.Text}
                         placeholder="Masukkan nomor paspor"
+                        defaultValue={defaultValue?.no_paspor ?? ''}
                         onChange={(data) => {
                             setDokumenIdentitas(prev => ({
                                 ...prev, no_paspor: data
@@ -83,6 +87,7 @@ export default function DokumenIdentitasSection({ title, isWNA = false, onChange
                     <DatePickerComponent
                         getToggleStatus={() => {}}
                         label="Tanggal Berakhir Paspor"
+                        defaultDate={defaultValue?.tgl_akhir_paspor ?? ''}
                         onChange={(data) => {
                             setDokumenIdentitas(prev => ({
                                 ...prev, tgl_akhir_paspor: data
@@ -102,12 +107,14 @@ export default function DokumenIdentitasSection({ title, isWNA = false, onChange
                                 }))
                             }}
                             placeholder="Pilih jenis sponsor"
+                            defaultData={defaultValue?.tipe_sponsor ?? ''}
                         />
                         <InputComponent
                             keyname="nama_sponsor"
                             name="Nama Sponsor"
                             dataType={DataType.Text}
                             placeholder="Masukkan nama sponsor"
+                            defaultValue={defaultValue?.nama_sponsor ?? ''}
                             onChange={(data) => {
                                 setDokumenIdentitas(prev => ({
                                     ...prev, nama_sponsor: data
@@ -119,6 +126,7 @@ export default function DokumenIdentitasSection({ title, isWNA = false, onChange
                             name="Alamat Sponsor"
                             dataType={DataType.Text}
                             placeholder="Masukkan alamat sponsor"
+                            defaultValue={defaultValue?.alamat_sponsor ?? ''}
                             onChange={(data) => {
                                 setDokumenIdentitas(prev => ({
                                     ...prev, alamat_sponsor: data
@@ -134,12 +142,14 @@ export default function DokumenIdentitasSection({ title, isWNA = false, onChange
                                     ...prev, dokumen_ijin_tinggal: data
                                 }))
                             }}
+                            defaultItem={defaultValue?.dokumen_ijin_tinggal ?? ''}
                         />
                         <InputComponent
                             keyname="no_kitas/kitap"
                             name={`Nomor ${dokumenIdentitas.dokumen_ijin_tinggal === 'KITAP' ? 'KITAP': 'KITAS'}`}
                             dataType={DataType.Number}
                             placeholder={`Nomor ${dokumenIdentitas.dokumen_ijin_tinggal === 'KITAP' ? 'KITAP': 'KITAS'}`}
+                            defaultValue={defaultValue?.no_kitas_kitap ?? ''}
                             onChange={(data) => {
                                 setDokumenIdentitas(prev => ({
                                     ...prev, no_kitas_kitap: data
@@ -151,6 +161,7 @@ export default function DokumenIdentitasSection({ title, isWNA = false, onChange
                             name={`Tempat Terbit ${dokumenIdentitas.dokumen_ijin_tinggal === 'KITAP' ? 'KITAP': 'KITAS'}`}
                             dataType={DataType.Text}
                             placeholder="Masukkan nama tempat"
+                            defaultValue={defaultValue?.tmp_terbit_kitas_kitap ?? ''}
                             onChange={(data) => {
                                 setDokumenIdentitas(prev => ({
                                     ...prev, tmp_terbit_kitas_kitap: data
@@ -160,6 +171,7 @@ export default function DokumenIdentitasSection({ title, isWNA = false, onChange
                         <DatePickerComponent
                             getToggleStatus={() => {}}
                             label={`Tanggal Terbit ${dokumenIdentitas.dokumen_ijin_tinggal === 'KITAP' ? 'KITAP': 'KITAS'}`}
+                            defaultDate={defaultValue?.tgl_terbit_kitas_kitap ?? ''}
                             onChange={(data) => {
                                 setDokumenIdentitas(prev => ({
                                     ...prev, tgl_terbit_kitas_kitap: data
@@ -169,6 +181,7 @@ export default function DokumenIdentitasSection({ title, isWNA = false, onChange
                         <DatePickerComponent
                             getToggleStatus={() => {}}
                             label={`Tanggal Akhir ${dokumenIdentitas.dokumen_ijin_tinggal === 'KITAP' ? 'KITAP': 'KITAS'}`}
+                            defaultDate={defaultValue?.tgl_akhir_kitas_kitap ?? ''}
                             onChange={(data) => {
                                 setDokumenIdentitas(prev => ({
                                     ...prev, tgl_akhir_kitas_kitap: data
@@ -180,15 +193,17 @@ export default function DokumenIdentitasSection({ title, isWNA = false, onChange
                             name="Tempat Datang Pertama"
                             dataType={DataType.Text}
                             placeholder="Masukkan nama tempat"
+                            defaultValue={defaultValue?.tmp_datang_pertama ?? ''}
                             onChange={(data) => {
                                 setDokumenIdentitas(prev => ({
-                                    ...prev, tgl_datang_pertama: data
+                                    ...prev, tmp_datang_pertama: data
                                 }))
                             }}
                         />
                         <DatePickerComponent
                             getToggleStatus={() => {}}
                             label="Tanggal Datang Pertama"
+                            defaultDate={defaultValue?.tgl_datang_pertama ?? ''}
                             onChange={(data) => {
                                 setDokumenIdentitas(prev => ({
                                     ...prev, tgl_datang_pertama: data
@@ -201,3 +216,4 @@ export default function DokumenIdentitasSection({ title, isWNA = false, onChange
         </section>
     )
 }
+

@@ -13,10 +13,11 @@ export type DataPerkawinanProps = {
 
 type DataPerkawinanType = {
     title : string
+    defaultValue?: Partial<DataPerkawinanProps>
     onChange: (value: Partial<DataPerkawinanProps>) => void
 }
 
-export default function DataPerkawinanSection({ title, onChange } : DataPerkawinanType) {
+export default function DataPerkawinanSection({ title, defaultValue, onChange } : DataPerkawinanType) {
     const [dataPerkawinan, setDataPerkawinan] = useState<Partial<DataPerkawinanProps>>({})
 
     useEffect(() => {
@@ -32,6 +33,7 @@ export default function DataPerkawinanSection({ title, onChange } : DataPerkawin
                     getDropdownStatus={() => {}}
                     data={['Belum/Tidak kawin', 'Kawin', 'Cerai Hidup', 'Cerai Mati']}
                     label="Status Perkawinan"
+                    defaultData={defaultValue?.status_perkawinan ?? ''}
                     onChange={(data) => {setDataPerkawinan(prev => ({
                         ...prev, status_perkawinan: data
                     }))}}
@@ -44,6 +46,7 @@ export default function DataPerkawinanSection({ title, onChange } : DataPerkawin
                     <>
                         <DatePickerComponent
                             getToggleStatus={() => {}}
+                            defaultDate={defaultValue?.status_perkawinan === 'Kawin' ? defaultValue?.tgl_kawin : defaultValue?.tgl_cerai}
                             label={`Tanggal ${dataPerkawinan.status_perkawinan === 'Kawin' ? 'Perkawinan' : 'Perceraian'}`}
                             onChange={(data) => {
                                 if (dataPerkawinan.status_perkawinan === 'Kawin') {
@@ -62,6 +65,7 @@ export default function DataPerkawinanSection({ title, onChange } : DataPerkawin
                             name={`Nomor Akta ${dataPerkawinan.status_perkawinan === 'Kawin' ? 'Perkawinan' : 'Perceraian'}`}
                             placeholder="Masukkan nomor akta"
                             dataType="text"
+                            defaultValue={defaultValue?.status_perkawinan  === 'Kawin' ? defaultValue?.no_akta_perkawinan : defaultValue?.no_akta_perceraian}
                             onChange={(data) => {
                                 if (dataPerkawinan.status_perkawinan === 'Kawin') {
                                     setDataPerkawinan(prev => ({

@@ -12,7 +12,7 @@ type ModalProps = {
   height?: string
 }
 
-export default function Modal({ isOpen, onClose, title, children, width = "w-[600px]", height = "max-h-[90vh]" }: ModalProps) {
+export default function Modal({ isOpen, onClose, title, children, width = "w-[600px]", height = "" }: ModalProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
 
@@ -94,7 +94,7 @@ export default function Modal({ isOpen, onClose, title, children, width = "w-[60
       onClick={handleBackdropClick}
     >
       <div
-        className={`bg-white mx-3 rounded-2xl shadow-xl max-w-full min-h-[300px] ${height} overflow-hidden flex flex-col transition-all duration-300 ease-out transform ${width} ${
+        className={`bg-white mx-3 rounded-2xl shadow-xl max-w-full min-h-[200px] max-h-[90vh] ${height} overflow-hidden flex flex-col transition-all duration-300 ease-out transform ${width} ${
           isVisible
             ? 'scale-100 opacity-100 translate-y-0'
             : 'scale-95 opacity-0 translate-y-4'

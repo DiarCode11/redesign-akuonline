@@ -8,10 +8,11 @@ export type KondisiKhususProps = {
 
 type KondisiKhususType = {
     title : string
+    defaultValue?: Partial<KondisiKhususProps>
     onChange : (value: Partial<KondisiKhususProps>) => void
 }
 
-export default function KondisiKhususSection({ title, onChange } : KondisiKhususType) {
+export default function KondisiKhususSection({ title, defaultValue, onChange } : KondisiKhususType) {
     const [kondisiKhusus, setKondisiKhusus] = useState<Partial<KondisiKhususProps>>({})
 
     const jenisDisabilitas = [
@@ -49,6 +50,7 @@ export default function KondisiKhususSection({ title, onChange } : KondisiKhusus
                     getDropdownStatus={() => {}}
                     data={jenisDisabilitas}
                     label="Penyandang Disabilitas"
+                    defaultData={defaultValue?.disabilitas ?? ''}
                     onChange={(data) => {
                         setKondisiKhusus(prev => ({
                             ...prev, disabilitas: data
@@ -60,6 +62,7 @@ export default function KondisiKhususSection({ title, onChange } : KondisiKhusus
                     getDropdownStatus={() => {}}
                     data={jenisKelainan}
                     label="Kelainan Fisik & Mental"
+                    defaultData={defaultValue?.kelainan ?? ''}
                     onChange={(data) => {
                         setKondisiKhusus(prev => ({
                             ...prev, kelainan: data

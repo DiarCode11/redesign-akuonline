@@ -23,13 +23,21 @@ export default function Navbar() {
     useEffect(() => {
         const data = localStorage.getItem('data');
         const dataJSON = JSON.parse(data);
-        setServiceList(dataJSON);
-        setNotifCounted(dataJSON ? dataJSON.length : null)
+
+        if (Array.isArray(dataJSON)) {
+            setServiceList([...dataJSON].reverse()); // dibalik, dan spread agar tidak mutate data asli
+            setNotifCounted(dataJSON.length);
+        } else {
+            setServiceList([]);   // default jika null/undefined
+            setNotifCounted(null);
+        }
+
         console.log(data);
-    }, [])
+    }, []);
+
 
     return (
-        <nav className="bg-white h-20 shadow-lg flex justify-between items-center px-4 fixed top-0 left-0 z-10 w-full">
+        <nav className="bg-white h-20 shadow-lg flex justify-between items-center px-4 fixed top-0 left-0 z-50 w-full">
             <div className="font-bold text-xl flex items-center">
                 <Image
                 src={"/IconNavbar.svg"}
@@ -59,13 +67,15 @@ export default function Navbar() {
                                 <h1 className="text-lg">Layanan Aktif</h1>
                                 <X onClick={() => setShowNotif(false)} />
                             </div>
-                            <div className={`w-full h-full bg-white flex flex-col rounded-b-xl border border-slate-300 overflow-hidden shadow-lg ${!serviceList && "justify-center items-center"}`}>
+                            <div className={`w-full h-full bg-white flex flex-col overflow-y-scroll rounded-b-xl border border-slate-300 overflow-hidden shadow-lg ${!serviceList && "justify-center items-center"}`}>
                                 { serviceList ? serviceList.map((data, id) => (
                                     <div key={data.id} className="py-2 h-max px-3 w-full border-b-2 border-gray-200 relative">
                                         <h3 className="pb-2 font-semibold flex justify-between">
                                             <span>{data.serviceName}</span>
                                         </h3>
-                                        <p className="text-sm pb-4">Lihat detail..</p>
+                                        <Link href={`/detail-pengajuan/${data.id}`}>
+                                            <p className="text-sm pb-4 cursor-pointer">Lihat detail..</p>
+                                        </Link>
                                         <div>
                                             <span className="text-sm text-gray-600/70 flex space-x-2">
                                                 <div><AlarmClock size={20} /></div>
