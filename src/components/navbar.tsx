@@ -64,11 +64,11 @@ export default function Navbar() {
                     { showNotif && (
                         <div ref={serviceDropdownRef} className="bg-white h-[400px] absolute w-[300px] sm:w-[400px] translate-x-14 rounded-t-xl right-0 top-16">
                             <div className="flex justify-between  border border-slate-300 rounded-t-xl p-4">
-                                <h1 className="text-lg">Layanan Aktif</h1>
+                                <h1 className="text-lg">Riwayat Pengajuan</h1>
                                 <X onClick={() => setShowNotif(false)} />
                             </div>
                             <div className={`w-full h-full bg-white flex flex-col overflow-y-scroll rounded-b-xl border border-slate-300 overflow-hidden shadow-lg ${!serviceList && "justify-center items-center"}`}>
-                                { serviceList ? serviceList.map((data, id) => (
+                                { serviceList.length > 1 ? serviceList.map((data, id) => (
                                     <div key={data.id} className="py-2 h-max px-3 w-full border-b-2 border-gray-200 relative">
                                         <h3 className="pb-2 font-semibold flex justify-between">
                                             <span>{data.serviceName}</span>
