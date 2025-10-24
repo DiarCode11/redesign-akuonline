@@ -7,7 +7,6 @@ import Link from "next/link"
 import dayjs from "dayjs"
 import "dayjs/locale/id"
 import relativeTime from "dayjs/plugin/relativeTime"
-import Alert from "./alert"
 import { useLogout } from "@/lib/hooks/useLogout"
 
 dayjs.extend(relativeTime)
@@ -85,7 +84,7 @@ export default function Navbar() {
                                         <span className="bg-yellow-500 text-white px-2 text-sm font-medium rounded absolute bottom-2 right-5">Diproses</span>
                                     </div>
                                 )) : (
-                                    <span>Tidak ada riwayat pengajuan</span>
+                                    <div className="flex w-full justify-center h-full items-center">Tidak ada riwayat pengajuan</div>
                                 )}
                             </div>
                         </div>
