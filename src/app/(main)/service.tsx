@@ -148,7 +148,7 @@ export default function ServicesComponent() {
       <Modal
         isOpen={openedModal === "KK"}
         onClose={() => setOpenModal(null)}
-        title="Kartu Keluarga"
+        title="Layanan Kartu Keluarga"
         width="w-[700px]" // Bisa disesuaikan
       >
         <div className="grid sm:grid-cols-4 grid-cols-2 gap-x-10 gap-y-7 px-10 py-6">
@@ -172,7 +172,7 @@ export default function ServicesComponent() {
       <Modal
         isOpen={openedModal === "KTP"}
         onClose={() => setOpenModal(null)}
-        title="Kartu Keluarga"
+        title="Layanan KTP"
         width="w-[700px]" // Bisa disesuaikan
       >
         <div className="grid sm:grid-cols-4 grid-cols-2 gap-x-10 gap-y-16 px-10 py-6">
