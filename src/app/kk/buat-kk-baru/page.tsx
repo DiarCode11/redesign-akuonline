@@ -23,6 +23,7 @@ import { KondisiKhususProps } from "@/components/kk-component/add-data-section/k
 import { DataOrangtuaProps } from "@/components/kk-component/add-data-section/data-orangtua";
 import FileInput from "@/components/form-component/fileinput-component";
 import { ServiceProps, deleteDataTemp, deleteDataTempByIdx, getDataTempAll, getDataTempByIdx, saveToLocalStorage, saveToLocalStorageTemp, updateDataTempById } from "@/lib/save-to-local-storage";
+import { CreateDataHelper } from "@/helper/createDataHelper";
 
 type formDataProps = DataPribadiProps & DokumenIdentitasType & DataPerkawinanProps & KondisiKhususProps & DataOrangtuaProps
 type dataKKProps = {
@@ -119,7 +120,7 @@ export default function NewKK() {
         setDataKKList(listKK);
     }
 
-    function saveData() {
+    async function saveData() {
         const datetimeNow = new Date(); 
         const listKK = getDataTempAll();
 
@@ -131,14 +132,22 @@ export default function NewKK() {
 
         const new_data: ServiceProps = {
             serviceName: "Buat Kartu Keluarga",
-            created_at: datetimeNow,
+            requestedBy: {
+                name: "I Wayan Yoga Sastrawan",
+                nik: "123456789"
+            },
             data: finalData
         };
 
-        saveToLocalStorage(new_data);
+        try {
+           const res = await CreateDataHelper("/api/kk", new_data)
+           console.log(res)
+        } catch (error) {
+            console.error(error)
+        }
+        
         router.push('/');
     }
-
 
     function nextToStep(value: number) {
         setCurrentStep(Math.max(accordionActive, value));

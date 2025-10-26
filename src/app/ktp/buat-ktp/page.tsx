@@ -30,6 +30,10 @@ export default function BuatKTP() {
     function saveData() {
         const detail_data: ServiceProps = {
             created_at: new Date(),
+            requestedBy: {
+                name: "I Wayan Yoga Sastrawan",
+                nik: "123456789"
+            },
             serviceName: "Pembuatan KTP",
             data: {
                 NIKPemohon, nama_lengkap: "I Wayan Yoga Sastrawan"

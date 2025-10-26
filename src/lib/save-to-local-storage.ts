@@ -1,9 +1,10 @@
 "use client";
+import { Requester } from '@/dtos/kk/KkRequesterDto';
 import { v4 as uuidv4 } from 'uuid';
 
 export type ServiceProps = {
     serviceName : string,
-    created_at : Date,
+    requestedBy? : Requester,
     [ key : string ] : any
 }
 
