@@ -23,7 +23,8 @@ import { KondisiKhususProps } from "@/components/kk-component/add-data-section/k
 import { DataOrangtuaProps } from "@/components/kk-component/add-data-section/data-orangtua";
 import FileInput from "@/components/form-component/fileinput-component";
 import { ServiceProps, deleteDataTemp, deleteDataTempByIdx, getDataTempAll, getDataTempByIdx, saveToLocalStorage, saveToLocalStorageTemp, updateDataTempById } from "@/lib/save-to-local-storage";
-import { CreateDataHelper } from "@/helper/createDataHelper";
+import { SubmitDataHelper } from "@/helper/submitDataHelper";
+import { useAuth } from "@/context/authContext";
 
 type formDataProps = DataPribadiProps & DokumenIdentitasType & DataPerkawinanProps & KondisiKhususProps & DataOrangtuaProps
 type dataKKProps = {
@@ -40,6 +41,7 @@ type dataKKProps = {
 
 
 export default function NewKK() {
+    const auth = useAuth()
     const [familyData, setFamilyData] = useState<Partial<dataKKProps>>({});
     const [formData, setFormData] = useState<Partial<formDataProps>>({})
     const [accordionActive, setAccordionActive] = useState<number>(1);
@@ -133,14 +135,14 @@ export default function NewKK() {
         const new_data: ServiceProps = {
             serviceName: "Buat Kartu Keluarga",
             requestedBy: {
-                name: "I Wayan Yoga Sastrawan",
-                nik: "123456789"
+                name: auth.name,
+                id: auth.id 
             },
             data: finalData
         };
 
         try {
-           const res = await CreateDataHelper("/api/kk", new_data)
+           const res = await SubmitDataHelper("/api/kk", new_data)
            console.log(res)
         } catch (error) {
             console.error(error)

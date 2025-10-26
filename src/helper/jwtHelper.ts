@@ -19,6 +19,7 @@ function checkSecretToken() {
 
 export async function generateJwtToken(payload: JwtPayloadInterface, expiresIn: string = "1h") {
   checkSecretToken();
+  console.log("Payload sebelum sign:", payload);
   const token: string = await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setExpirationTime(expiresIn)
@@ -30,5 +31,7 @@ export async function generateJwtToken(payload: JwtPayloadInterface, expiresIn: 
 export async function decodeJwtToken(token: string) {
   checkSecretToken();
   const { payload } = await jwtVerify(token, secret)
+  console.log("Payload sesudah sign:", payload);
+
   return payload as JwtPayloadInterface;
 }

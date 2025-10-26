@@ -8,11 +8,13 @@ import dayjs from "dayjs"
 import "dayjs/locale/id"
 import relativeTime from "dayjs/plugin/relativeTime"
 import { useLogout } from "@/lib/hooks/useLogout"
+import { useAuth } from "@/context/authContext"
 
 dayjs.extend(relativeTime)
 dayjs.locale('id');
 
 export default function Navbar() {
+    const user = useAuth()
     const [notifCounted, setNotifCounted] = useState< number | null >(null);
     const [showNotif, setShowNotif] = useState<boolean>(false);
     const [showLogout, setShowLogout] = useState<boolean>(false);
@@ -92,7 +94,7 @@ export default function Navbar() {
 
                     { showLogout && (
                         <div className="bg-white absolute w-[150px] sm:w-[200px] translate-x-14 rounded-xl right-0 top-16 p-3 border border-slate-200">
-                            <h1 className="pb-3">I Wayan Yoga Sastrawan</h1>
+                            <h1 className="pb-3">{user?.name}</h1>
                             <button 
                                 onClick={() => logout()}
                                 disabled={isLoading}

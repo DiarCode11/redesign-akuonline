@@ -1,4 +1,6 @@
+import { CreateSubmissionHistory } from "@/helper/createSubmissionHistory";
 import { db } from "@/lib/firebase-admin";
+import { v4 as uuidv4 } from "uuid"
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
@@ -23,12 +25,23 @@ export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
 
-        const docRef = await db.collection("kk").add({
-            ...body,
-            createdAt: new Date()
-        });
+        const newId = uuidv4();
+        const createdAt = new Date();
 
-        return NextResponse.json({id : docRef.id, message: "Berhasil menambah data"})
+        const [docRef, history] = await Promise.all([
+            db.collection("kk").doc(newId).set({
+                ...body, createdAt
+            }),
+            CreateSubmissionHistory({
+                userId: body.requestedBy.id,
+                docId: newId,
+                description: "Pengajuan pembuatan kartu keluarga baru",
+                createdAt,
+                submissionType: "Buat KK"
+            })
+        ])
+
+        return NextResponse.json({id : newId, message: "Berhasil menambah data", data: history})
         
     } catch(error) {
         return NextResponse.json(
@@ -37,3 +50,4 @@ export async function POST(req: NextRequest) {
         )
     }
 }
+

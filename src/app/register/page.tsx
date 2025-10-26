@@ -7,7 +7,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { UserAdditionRegisterDto, UserCommonRegisterDto } from "@/schemas/user/UserRegisterSchema";
-import { CreateDataHelper } from "@/helper/createDataHelper";
+import { SubmitDataHelper } from "@/helper/submitDataHelper";
 
 const village_data = {
   "Banjar": [
@@ -137,7 +137,7 @@ export default function Register() {
     async function submitFirstForm() {
         setDisabledFirstForm(true);
         try {
-            const result = await CreateDataHelper("/api/register?session=1", firstFormValues);
+            const result = await SubmitDataHelper("/api/register?session=1", firstFormValues);
             setDisabledFirstForm(false);
             // Ketika request berhasil
             if (result.ok) {
@@ -166,7 +166,7 @@ export default function Register() {
     async function submitSecondForm() {
         setDisabledSecondForm(true);
         try {
-            const result = await CreateDataHelper(`/api/register?session=2&id=${idDataToAdd}`, secondFormValues)
+            const result = await SubmitDataHelper(`/api/register?session=2&id=${idDataToAdd}`, secondFormValues)
             setDisabledSecondForm(false)
             if (result.ok) {
                 console.log("data berhasil ditambahkan")

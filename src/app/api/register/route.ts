@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
                 const payloadJwt : JwtPayloadInterface = {
                     id: snap.id,
                     email: snap.data().email,
-                    name: snap.data().name
+                    name: validData.name
                 }
 
                 const jwtToken = await generateJwtToken(payloadJwt);
@@ -85,7 +85,8 @@ export async function POST(req: NextRequest) {
                     value: jwtToken,
                     httpOnly: true,
                     path: '/',
-                    secure: false
+                    secure: false,
+                    maxAge: 60 * 60
                 });
 
                 return response;

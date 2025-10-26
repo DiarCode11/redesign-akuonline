@@ -2,10 +2,8 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Modal from "@/components/modal";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { link } from "fs";
+import { useAuth } from "@/context/authContext";
 
 const menus = [
   {
@@ -140,6 +138,7 @@ const akta_menus = [
 ]
 
 export default function ServicesComponent() {
+  const user = useAuth()
   const [openedModal, setOpenModal] = useState(null);
 
   return (

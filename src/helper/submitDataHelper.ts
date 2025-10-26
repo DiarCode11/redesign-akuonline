@@ -1,4 +1,4 @@
-export async function CreateDataHelper(url: string, data: any) {
+export async function SubmitDataHelper(url: string, data: any) {
   try {
     const response = await fetch(url, {
         method: "POST",

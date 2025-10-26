@@ -15,7 +15,7 @@ export const UserCommonRegisterSchema = z.object({
     });
   }
   
-  // 2. Cek email di Firestore (Admin SDK)
+  // 2. Cek nik di Firestore (Admin SDK)
   const snapshot = await db
     .collection("users")
     .where("nik", "==", data.nik)
