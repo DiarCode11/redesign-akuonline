@@ -2,7 +2,7 @@
 import Accordion from "@/components/accordion";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CircleAlertIcon } from "lucide-react";
 import InputComponent from "@/components/form-component/input-component";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
@@ -14,6 +14,10 @@ import DropdownComponent from "@/components/form-component/dropdown-component";
 import DatePickerComponent from "@/components/form-component/datepicker-component";
 import { VILLAGE_DATA, agama_list, hubunganKeluarga, pendidikanList, kabupaten_list, pilihan_pekerjaan_kk, provinsi_list } from "@/lib/config";
 import { saveToLocalStorage, ServiceProps } from "@/lib/save-to-local-storage";
+import { SubmitDataHelper } from "@/helper/submitDataHelper";
+import { useAuth } from "@/context/authContext";
+import Alert from "@/components/alert";
+import { useRouter } from "next/navigation";
 
 type CheckedProps = {
     nama: boolean,
@@ -27,6 +31,7 @@ type CheckedProps = {
 }
 
 type dataKtpProps = {
+    nik: string,
     nama: string,
     tempat_lahir: string,
     tgl_lahir: string,
@@ -57,21 +62,39 @@ export default function EditKTP() {
     const [checkboxStatus, setCheckboxStatus] = useState<Partial<CheckedProps>>({});
     const [jenisPerubahanSelected, setJenisPerubahanSelected] = useState<boolean>(false);
     const [dataKtp, setDataKtp] = useState<Partial<dataKtpProps>>({});
+    const [showAlert, setShowAlert] = useState<boolean>(false);
+    const auth = useAuth()
+    const router = useRouter()
 
     
     const [kecamatan, setKecamatan] = useState<string>("");
     const [desaList, setDesaList] = useState<string[]>([]);
 
-    function saveData() {
-        const detail_data: ServiceProps = {
-            created_at: new Date(),
-            serviceName: "Perubahan KTP",
-            data: {
-                NIKPemohon, nama_lengkap: "I Wayan Yoga Sastrawan", data: dataKtp
-            }
-        }
+    async function saveData() {
+        try {
+            const payload : ServiceProps = {
+                userId: auth.id,
+                userName: auth.name,
+                serviceType: "KTP",
+                serviceName: "Perubahan Data KTP",
+                description: "Pengajuan pembaruan data KTP",
+                createdAt: new Date(),
+                data: dataKtp
+            } 
 
-        saveToLocalStorage(detail_data)
+            const response = await SubmitDataHelper("/api/pengajuan", payload);
+            if (response.ok) {
+                console.log(response)
+                setTimeout(() => {
+                    setShowAlert(false)
+                    router.push("/")
+                }, 2000)
+            } else {
+                console.log(response)
+            }
+        } catch (e) {
+            console.log(e)
+        }
     }
 
 
@@ -135,6 +158,9 @@ export default function EditKTP() {
 
     return (
         <>
+            {/* Alert */}
+            <Alert title="Berhasil membuat pengajuan" isShow={showAlert} onClose={(data) => setShowAlert(false)} prefixIcon={<CircleAlertIcon className="text-green-800" />} />
+
             <div className="flex space-x-6 items-center pb-10">
                 <Link href={"/"}>
                     <ArrowLeft />
@@ -164,6 +190,7 @@ export default function EditKTP() {
                             dataType="number"
                             onChange={(data) => {
                                 setNIKPemohon(data);
+                                setDataKtp(prev => ({...prev, nik: data}))
                             }}
                             placeholder="Masukkan NIK"
                         />

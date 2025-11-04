@@ -1,40 +1,72 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { LoginFormProps } from '@/app/login/page';
+import { UserLoginSchema } from '@/schemas/user/UserLoginSchema';
+import z from 'zod';
+import { db } from '@/lib/firebase-admin';
+import { generateJwtToken } from '@/helper/jwtHelper';
 
 export async function POST(req: NextRequest) {
-    const fakeUser : LoginFormProps = {
-        nik: '123456789',
-        password: 'password123'
-    }
+    try {
+        const body = await req.json()
+        const resultValidation = await UserLoginSchema.safeParseAsync(body);
+        // Validasi Penuh dengan Zod
+        if (!resultValidation.success) {
+            return NextResponse.json(
+                { errors : z.treeifyError(resultValidation.error) },
+                { status: 400 }
+            )
+        }
 
-    const errorMsg : LoginFormProps = { nik: null, password: null }
-    
-    const { nik, password } : LoginFormProps = await req.json();
-    if (!nik) {
-        errorMsg.nik= "NIK Tidak boleh kosong";
-    }
+        const snapshot = await db
+            .collection("users")
+            .where("nik", "==", body.nik)
+            .get();
 
-    if (!password) {
-        errorMsg.password = "Password tidak boleh kosong"
-    }
+        const token = await generateJwtToken({
+            id: snapshot.docs[0].id,
+            email: snapshot.docs[0].data().email,
+            name: snapshot.docs[0].data().name
+        })
 
-    if (errorMsg.nik || errorMsg.password) {
-        return NextResponse.json(errorMsg, { status: 400});
-    }
+        const response = NextResponse.json({
+            message: "Berhasil login"
+        })
 
-
-    if (nik === fakeUser.nik && password === fakeUser.password) {
-        const response = NextResponse.json({ success: true }, { status: 200 })
         response.cookies.set({
-            name: 'auth_token',
-            value: 'test-token',
+            name: 'access_token',
+            value: token,
             httpOnly: true,
             path: '/',
-            secure: false
-        });
-        return response;
-    }
+            secure: false,
+            maxAge: 60 * 60
+        })
 
-    errorMsg.password = "email atau password salah";
-    return NextResponse.json(errorMsg, { status: 400});
+        return response
+
+    } catch (e) {
+        // Jika JSON body rusak
+        if (e instanceof SyntaxError) {
+            return NextResponse.json(
+                { message: "Invalid JSON format", detail: e.message },
+                { status: 400 }
+            );
+        }
+
+        // Error dari Zod (async refine misalnya)
+        if (e instanceof z.ZodError) {
+            return NextResponse.json(
+                { message: "Validation failed", errors: z.treeifyError(e) },
+                { status: 400 }
+            );
+        }
+
+        // Error lain (Firestore, Argon, Encrypt, dll)
+        return NextResponse.json(
+            { 
+                message: "Internal Server Error",
+                reason: e?.message ?? "Unknown error"
+            },
+            { status: 500 }
+        );
+    }
 }

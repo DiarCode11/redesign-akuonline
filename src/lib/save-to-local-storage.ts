@@ -1,10 +1,17 @@
 "use client";
+import { Requester } from '@/dtos/kk/KkRequesterDto';
 import { v4 as uuidv4 } from 'uuid';
 
 export type ServiceProps = {
-    serviceName : string,
-    created_at : Date,
-    [ key : string ] : any
+    id?: string,
+    serviceName: string,
+    serviceType: string,
+    description: string,
+    createdAt: Date,
+    userId: string,
+    userName: string,
+    data: any
+    [key: string]: any
 }
 
 export function saveToLocalStorage(new_data : ServiceProps) {
