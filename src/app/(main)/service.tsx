@@ -2,10 +2,10 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Modal from "@/components/modal";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { link } from "fs";
+import { useAuth } from "@/context/authContext";
+import { CheckCircle2Icon, CircleAlertIcon } from "lucide-react";
+import Alert from "@/components/alert";
 
 const menus = [
   {
@@ -140,6 +140,7 @@ const akta_menus = [
 ]
 
 export default function ServicesComponent() {
+  const user = useAuth()
   const [openedModal, setOpenModal] = useState(null);
 
   return (
@@ -219,7 +220,6 @@ export default function ServicesComponent() {
           ))}
         </div>
       </Modal>
-
       <div className="h-full rounded-t-[50px] bg-white py-10 md:px-16 px-5">
         <h1 className="md:text-2xl text-lg font-semibold w-full text-center pb-10 text-black/45">Pilih Layanan Kependudukan</h1>
         <div className="grid sm:grid-cols-4 md:grid-cols-5 grid-cols-2 md:gap-x-5 gap-x-2 gap-y-10 relative">

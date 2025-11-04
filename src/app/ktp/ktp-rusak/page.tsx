@@ -9,7 +9,16 @@ import DatePickerComponent from "@/components/form-component/datepicker-componen
 import { Check } from "lucide-react";
 import { Download } from "lucide-react";
 import FileInput from "@/components/form-component/fileinput-component";
+import { ServiceProps } from "@/lib/save-to-local-storage";
+import { useAuth } from "@/context/authContext";
+import { SubmitDataHelper } from "@/helper/submitDataHelper";
+import Alert from "@/components/alert";
+import { useRouter } from "next/navigation";
 
+type dataKtpProps = {
+    nikPemohon: string,
+    tglKehilangan: string,
+}
 
 export default function KTP_Rusak() {
     const [accordionActive, setAccordionActive] = useState<number>(1);
@@ -18,6 +27,11 @@ export default function KTP_Rusak() {
     const [isAccordionOpen, setIsAccordionOpen] = useState<boolean>(true);
     const [isOpenCalendar, setIsOpenCalendar] = useState<boolean>(false);
     const [isAllDocDownloaded, setAllDocDownloaded] = useState<boolean>(false);
+    const [dataKtp, setDataKtp] = useState<Partial<dataKtpProps>>({});
+    const [showAlert, setShowAlert] = useState<boolean>(false);
+    
+    const auth = useAuth()
+    const router = useRouter()
 
     function accordionStatus(status: boolean) {
         if (!status) {
@@ -41,6 +55,33 @@ export default function KTP_Rusak() {
     function nextStep(step: number) {
         setCurrentStep(step);
         setAccordionActive(step);
+    }
+
+    async function saveData() {
+        try {
+            const payload : ServiceProps = {
+                userId: auth.id,
+                userName: auth.name,
+                serviceType: "KTP",
+                serviceName: "Perubahan Data KTP",
+                description: "Pengajuan pembaruan data KTP",
+                createdAt: new Date(),
+                data: dataKtp
+            } 
+
+            const response = await SubmitDataHelper("/api/pengajuan", payload);
+            if (response.ok) {
+                console.log(response)
+                setTimeout(() => {
+                    setShowAlert(false)
+                    router.push("/")
+                }, 2000)
+            } else {
+                console.log(response)
+            }
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     return (
