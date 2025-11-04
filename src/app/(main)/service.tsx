@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Modal from "@/components/modal";
 import Link from "next/link";
 import { useAuth } from "@/context/authContext";
+import { CheckCircle2Icon, CircleAlertIcon } from "lucide-react";
+import Alert from "@/components/alert";
 
 const menus = [
   {
@@ -171,7 +173,7 @@ export default function ServicesComponent() {
       <Modal
         isOpen={openedModal === "KTP"}
         onClose={() => setOpenModal(null)}
-        title="Kartu Keluarga"
+        title="Kartu Tanda Penduduk"
         width="w-[700px]" // Bisa disesuaikan
       >
         <div className="grid sm:grid-cols-4 grid-cols-2 gap-x-10 gap-y-16 px-10 py-6">
@@ -218,7 +220,6 @@ export default function ServicesComponent() {
           ))}
         </div>
       </Modal>
-
       <div className="h-full rounded-t-[50px] bg-white py-10 md:px-16 px-5">
         <h1 className="md:text-2xl text-lg font-semibold w-full text-center pb-10 text-black/45">Pilih Layanan Kependudukan</h1>
         <div className="grid sm:grid-cols-4 md:grid-cols-5 grid-cols-2 md:gap-x-5 gap-x-2 gap-y-10 relative">
