@@ -2,7 +2,7 @@
 import Accordion from "@/components/accordion";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CircleAlertIcon } from "lucide-react";
 import InputComponent from "@/components/form-component/input-component";
 import { Button } from "@/components/ui/button";
 import DatePickerComponent from "@/components/form-component/datepicker-component";
@@ -11,6 +11,14 @@ import { Download } from "lucide-react";
 import FileInput from "@/components/form-component/fileinput-component";
 import { CircleAlert } from "lucide-react";
 import { saveToLocalStorage, ServiceProps } from "@/lib/save-to-local-storage";
+import { SubmitDataHelper } from "@/helper/submitDataHelper";
+import { useAuth } from "@/context/authContext";
+import { useRouter } from "next/navigation";
+import Alert from "@/components/alert";
+
+type BuatKtpProps = {
+    NikCalonPemegangKtp: string;
+}
 
 
 export default function BuatKTP() {
@@ -25,22 +33,40 @@ export default function BuatKTP() {
     const [checkClicked, setCheckClicked] = useState<boolean>(false);
     const [currentNIK, setCurrentNIK] = useState<string>('');
     const [scheduleCreated, setScheduleCreated] = useState<boolean>(false);
+    const [jenisPerubahanSelected, setJenisPerubahanSelected] = useState<boolean>(false);
+    const [data, setData] = useState<BuatKtpProps>({
+        NikCalonPemegangKtp: ""
+    });
+    const [showAlert, setShowAlert] = useState<boolean>(false);
+    const auth = useAuth()
+    const router = useRouter()
 
+    
 
-    function saveData() {
-        const detail_data: ServiceProps = {
-            created_at: new Date(),
-            requestedBy: {
-                name: "I Wayan Yoga Sastrawan",
-                nik: "123456789"
-            },
-            serviceName: "Pembuatan KTP",
-            data: {
-                NIKPemohon, nama_lengkap: "I Wayan Yoga Sastrawan"
+    async function submitData() {
+        try {
+            const payload : ServiceProps = {
+                userId: auth.id,
+                userName: auth.name,
+                serviceType: "KTP",
+                serviceName: "Buat KTP",
+                description: "Pengajuan pembuatan KTP baru",
+                createdAt: new Date(),
+                data: data
+            } 
+
+            const response = await SubmitDataHelper("/api/pengajuan", payload);
+            if (response.ok) {
+                console.log(response)
+                setTimeout(() => {
+                    setShowAlert(false)
+                }, 2000)
+            } else {
+                console.log(response)
             }
+        } catch (e) {
+            console.log(e)
         }
-
-        saveToLocalStorage(detail_data)
     }
 
     function accordionStatus(status: boolean) {
@@ -66,12 +92,12 @@ export default function BuatKTP() {
         if (NIKPemohon !== currentNIK) {
             setCheckClicked(false);
         }
-        if (NIKPemohon.length > 0) {
+        if (data.NikCalonPemegangKtp) {
             setButtonActive(true);
         } else {
             setButtonActive(false);
         }
-    }, [NIKPemohon]);
+    }, [data.NikCalonPemegangKtp]);
 
     function nextStep(step: number) {
         setCurrentStep(step);
@@ -85,6 +111,9 @@ export default function BuatKTP() {
 
     return (
         <>
+            {/* Alert */}
+            <Alert title="Berhasil membuat pengajuan" isShow={showAlert} onClose={(data) => setShowAlert(false)} prefixIcon={<CircleAlertIcon className="text-green-800" />} />
+            
             <div className="flex space-x-6 items-center pb-10">
                 <Link href={"/"}>
                     <ArrowLeft />
@@ -113,11 +142,11 @@ export default function BuatKTP() {
                             name="NIK Calon Pemegang KTP"
                             dataType="number"
                             onChange={(data) => {
-                                setNIKPemohon(data);
+                                setData({ NikCalonPemegangKtp: data});
                             }}
                             placeholder="Masukkan NIK"
                         />
-                        <Button onClick={() => submitNIK()} className={"bg-sky-600 cursor-pointer h-10 text-white px-5"} size={'md'} variant={'primary'} disabled={!buttonActive}>
+                        <Button onClick={() => submitNIK()} className={"bg-sky-600 cursor-pointer h-10 text-white px-5"} size={'md'} variant={'primary'} disabled={data.NikCalonPemegangKtp.length < 10}>
                             Cek
                         </Button>
                     </div>
@@ -209,7 +238,10 @@ export default function BuatKTP() {
                     </div>
                     <div className="pt-10 flex justify-end">
                         <Button 
-                            onClick={() => nextStep(4)} 
+                            onClick={() => {
+                                nextStep(4);
+                                submitData();
+                            }} 
                             className={'bg-sky-600 text-white px-4 py-2'} size={'md'} variant={'primary'}>
                             Lanjut
                         </Button>
@@ -250,7 +282,7 @@ export default function BuatKTP() {
                         { scheduleCreated ? (
                             <Link href={'/'}>
                                 <Button 
-                                    onClick={() => saveData()}
+                                    onClick={() => {}}
                                     className={'bg-sky-600 text-white px-4 py-2'} size={'md'} variant={'primary'}>
                                     Selesai
                                 </Button>

@@ -3,7 +3,7 @@ import { useState } from "react";
 type FileInputProps = {
     label? : string,
     id: string
-    onChange : (file: File) => void
+    onChange? : (file: File) => void
 }
 
 export default function FileInput({ label='', id, onChange } : FileInputProps) {

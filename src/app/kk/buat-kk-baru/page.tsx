@@ -1,5 +1,5 @@
 "use client";
-import { ArrowLeft, Check, ChevronDown, Download, Pencil, SquarePen, Trash2 } from "lucide-react";
+import { ArrowLeft, Check, ChevronDown, CircleAlertIcon, Download, Pencil, SquarePen, Trash2 } from "lucide-react";
 import Accordion from "@/components/accordion";
 import { VILLAGE_DATA } from "@/lib/config";
 import { useState, useRef, useEffect, useCallback } from "react";
@@ -25,6 +25,7 @@ import FileInput from "@/components/form-component/fileinput-component";
 import { ServiceProps, deleteDataTemp, deleteDataTempByIdx, getDataTempAll, getDataTempByIdx, saveToLocalStorage, saveToLocalStorageTemp, updateDataTempById } from "@/lib/save-to-local-storage";
 import { SubmitDataHelper } from "@/helper/submitDataHelper";
 import { useAuth } from "@/context/authContext";
+import Alert from "@/components/alert";
 
 type formDataProps = DataPribadiProps & DokumenIdentitasType & DataPerkawinanProps & KondisiKhususProps & DataOrangtuaProps
 type dataKKProps = {
@@ -51,7 +52,7 @@ export default function NewKK() {
     const [isEditDataModalOpen, setIsEditDataModalOpen] = useState<boolean>(false);
     const [OldData, setOldData] = useState<formDataProps>(null);
     const [EditedData, setEditedData] = useState<formDataProps>(null);
-
+    const [showAlert, setShowAlert] = useState<boolean>(false)
     const [isDelConfirmModalOpen, setDelConfirmModalOpen] = useState<boolean>(false);
     const [indexToDelete, setIndexToDelete] = useState<number>(null);
     const [indexToEdit, setIndexToEdit] = useState<number>(null);
@@ -134,21 +135,25 @@ export default function NewKK() {
 
         const new_data: ServiceProps = {
             serviceName: "Buat Kartu Keluarga",
-            requestedBy: {
-                name: auth.name,
-                id: auth.id 
-            },
+            serviceType: "KK",
+            description: "Pengajuan pembuatan kartu keluarga baru",
+            createdAt: new Date(),
+            userId: auth.id,
+            userName: auth.name,
             data: finalData
         };
 
         try {
-           const res = await SubmitDataHelper("/api/kk", new_data)
-           console.log(res)
+            const res = await SubmitDataHelper("/api/pengajuan", new_data)
+            setShowAlert(true);
+            setTimeout(() => {
+                setShowAlert(false);
+                router.push('/');
+            }, 2000)
+            console.log(res)
         } catch (error) {
             console.error(error)
         }
-        
-        router.push('/');
     }
 
     function nextToStep(value: number) {
@@ -257,6 +262,9 @@ export default function NewKK() {
 
     return (
         <div>
+             {/* Alert */}
+            <Alert title="Berhasil membuat pengajuan" isShow={showAlert} onClose={(data) => setShowAlert(false)} prefixIcon={<CircleAlertIcon className="text-green-800" />} />
+
             <Modal title="Hapus record" width="w-[400px]" height="h-[100px]" isOpen={isDelConfirmModalOpen} onClose={() => setDelConfirmModalOpen(false)}>
                 <div className="text-center py-3">
                     Yakin ingin menghapus record ini?

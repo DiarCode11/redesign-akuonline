@@ -2,22 +2,34 @@
 import Accordion from "@/components/accordion";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CircleAlertIcon } from "lucide-react";
 import InputComponent from "@/components/form-component/input-component";
 import { Button } from "@/components/ui/button";
 import DatePickerComponent from "@/components/form-component/datepicker-component";
 import { Check } from "lucide-react";
 import { Download } from "lucide-react";
 import FileInput from "@/components/form-component/fileinput-component";
+import { ServiceProps } from "@/lib/save-to-local-storage";
+import { useAuth } from "@/context/authContext";
+import { SubmitDataHelper } from "@/helper/submitDataHelper";
+import Alert from "@/components/alert";
+import { useRouter } from "next/navigation";
 
+type KkRusakProps = {
+    NoKk : string,
+}
 
 export default function KKRusak() {
+    const auth = useAuth()
     const [accordionActive, setAccordionActive] = useState<number>(1);
     const [currentStep, setCurrentStep] = useState<number>(1);
     const [overflowStatus, setOverflowStatus] = useState<boolean>(true);
     const [isAccordionOpen, setIsAccordionOpen] = useState<boolean>(true);
     const [isOpenCalendar, setIsOpenCalendar] = useState<boolean>(false);
     const [isAllDocDownloaded, setAllDocDownloaded] = useState<boolean>(false);
+    const [data, setData] = useState<KkRusakProps>(null);
+    const [showAlert, setShowAlert] = useState<boolean>(false);
+    const router = useRouter()
 
     function accordionStatus(status: boolean) {
         if (!status) {
@@ -43,8 +55,38 @@ export default function KKRusak() {
         setAccordionActive(step);
     }
 
+    async function submitData() {
+        try {
+            const payload : ServiceProps = {
+                userId: auth.id,
+                userName: auth.name,
+                serviceType: "KK",
+                serviceName: "Kartu Keluarga Rusak",
+                description: "Pengajuan pembuatan KK baru karena kerusakan",
+                createdAt: new Date(),
+                data: data
+            } 
+
+            const response = await SubmitDataHelper("/api/pengajuan", payload);
+            if (response.ok) {
+                console.log(response)
+                setTimeout(() => {
+                    setShowAlert(false)
+                    router.push("/")
+                }, 2000)
+            } else {
+                console.log(response)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     return (
         <>
+            {/* Alert */}
+            <Alert title="Berhasil membuat pengajuan" isShow={showAlert} onClose={(data) => setShowAlert(false)} prefixIcon={<CircleAlertIcon className="text-green-800" />} />
+
             <div className="flex space-x-6 items-center pb-10">
                 <Link href={"/"}>
                     <ArrowLeft />
@@ -72,7 +114,7 @@ export default function KKRusak() {
                             name="NIK Kepala Keluarga"
                             dataType="number"
                             onChange={(data) => {
-                                
+                                setData(prev => ({...prev, NoKk: data}))
                             }}
                             placeholder="Masukkan NIK"
                         />
@@ -146,14 +188,13 @@ export default function KKRusak() {
                         <FileInput onChange={() => {}} id="akta_kawin" label="Scan Akta Perkawinan" />
                     </div>
                     <div className="pt-10 flex justify-end">
-                        <Link href={'/'}>
-                            <Button onClick={() => {
-                                    setOverflowStatus(true);
-                                } } 
-                                className={'bg-sky-600 text-white px-4 py-2'} size={'md'} variant={'primary'}>
-                                Simpan
-                            </Button>
-                        </Link>
+                        <Button onClick={() => {
+                                setOverflowStatus(true);
+                                submitData();
+                            } } 
+                            className={'bg-sky-600 text-white px-4 py-2'} size={'md'} variant={'primary'}>
+                            Simpan
+                        </Button>
                     </div>
                 </Accordion>
             </div>
