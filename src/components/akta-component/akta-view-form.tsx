@@ -5,7 +5,8 @@ import PerubahanKewarganegaraan from "@/app/akta/perubahan-kewarganegaraan/page"
 export type jenisAktaProps = 'Kelahiran' | 'Kematian' | 'Perkawinan' | 'Perceraian' | 'Pengakuan Anak' | 'Adopsi Anak' | 'Pengesahan Anak' | 'Pembetulan Akta' | 'Perubahan Kewarganegaraan';
 
 type AktaFormProps = {
-    type: jenisAktaProps
+    type: jenisAktaProps,
+    onFormChange?: (data: any) => void
 }
 
 export default function AktaForm({ type }: AktaFormProps) {

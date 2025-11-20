@@ -2,12 +2,13 @@ import { useState } from "react";
 
 type FileInputProps = {
     label? : string,
-    id: string
+    id: string,
+    filename?: string
     onChange? : (file: File) => void
 }
 
-export default function FileInput({ label='', id, onChange } : FileInputProps) {
-    const [selectedFileName, setSelectedFileName] = useState<string>('')
+export default function FileInput({ label='', id, filename, onChange } : FileInputProps) {
+    const [selectedFileName, setSelectedFileName] = useState<string>(filename ?? "")
 
     function setFile(file: File) {
         setSelectedFileName(file ? file.name : "");
@@ -16,7 +17,7 @@ export default function FileInput({ label='', id, onChange } : FileInputProps) {
 
     return (
         <>
-            <div className="">
+            <div className="mt-2">
                 <h2 className="sm:text-base text-sm pb-1">{label}</h2>
                 <div className="flex space-x-3">
                     <div className={`flex-1 border px-3 py-2 text-sm ${!selectedFileName && 'text-gray-500'} border-gray-800 bg-white rounded-md select-none truncate`}>

@@ -3,6 +3,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import {
   ArrowLeft,
   Check,
+  CircleAlert,
+  CircleAlertIcon,
   Download
 } from "lucide-react";
 import Accordion from "@/components/accordion";
@@ -16,29 +18,32 @@ import FileInput from "@/components/form-component/fileinput-component";
 import { SubmitDataHelper } from "@/helper/submitDataHelper";
 import { ServiceProps } from "@/lib/save-to-local-storage";
 import { useAuth } from "@/context/authContext";
-
-// ====== TYPES =======
-type dataKKProps = {
-  jenis_data: string;
-  kecamatan: string;
-  desa: string;
-  dusun: string;
-  kode_pos: string;
-  diwakilkan: boolean | null;
-  nama_perwakilan?: string;
-  nik_perwakilan?: string;
-};
+import { GetDataHelper } from "@/helper/getDataHelper";
+import { UpdateDataHelper } from "@/helper/updateDataHelper";
+import Alert from "@/components/alert";
+import { useRouter } from "next/navigation";
 
 type formDataProps = any; // gabungan semua props
-type dataKeluargaProps = {
-  nama: string;
-  status: string;
-  jenis_kelamin: string;
+export type dataKeluargaProps = {
+  id: string,
+  noKk: string,
+  email?: string,
+  namaLengkap: string,
+  status: string,
+  jenisKelamin: string,
+  golonganDarah: string,
+  tempatLahir: string,
+  tanggalLahir: string,
+  agama: string,
+  kewarganegaraan: string,
+  pendidikanTerakhir: string,
+  pekerjaan: string,
+  createdAt: string
 };
 
 type addAnddeleteDataProps = {
   alasan: string;
-};
+} & dataKeluargaProps;
 
 type UpdateKKProps = {
   noKk: string;
@@ -51,31 +56,36 @@ type UpdateKKProps = {
 // ====================================
 export default function EditKK() {
   const auth = useAuth();
+  const router = useRouter()
   const [accordionActive, setAccordionActive] = useState<number>(1);
   const [currentStep, setCurrentStep] = useState<number>(1);
-  const [dataAnggota, setDataAnggota] = useState<dataKeluargaProps[]>([
-    { nama: "I Wayan Yoga Sastrawan", status: "Kepala Keluarga", jenis_kelamin: "Laki-laki" },
-    { nama: "John Smith", status: "Saudara", jenis_kelamin: "Laki-laki" },
-    { nama: "Mariah Maclach", status: "Istri", jenis_kelamin: "Perempuan" },
-  ]);
+  const [dataAnggota, setDataAnggota] = useState<dataKeluargaProps[]>([]);
 
   const [isAllDocDownloaded, setAllDocDownloaded] = useState<boolean>(false);
   const [showDataAnggota, setShowDataAnggota] = useState<boolean>(false);
 
-  const [listDeletedData, setListDeletedData] = useState<any[]>([]);
+  const [listDeletedData, setListDeletedData] = useState<addAnddeleteDataProps[]>([]);
   const [listUpdatedData, setListUpdatedData] = useState<any[]>([]);
   const [listAddedData, setListAddedData] = useState<any[]>([]);
 
   const [isAddDataModalOpen, setIsAddDataModalOpen] = useState(false);
   const [isEditDataModalOpen, setIsEditDataModalOpen] = useState(false);
   const [isDeleteDataModalOpen, setIsDeleteDataModalOpen] = useState(false);
+  const [noKk, setNoKk] = useState<string>("")
 
   const [formData, setFormData] = useState<any>({});
-  const [deletedData, setDeletedData] = useState<any>({});
-  const [updatedData, setUpdatedData] = useState<any>({});
+  const [deletedData, setDeletedData] = useState<addAnddeleteDataProps>(null);
+  const [updatedData, setUpdatedData] = useState<dataKeluargaProps | null>(null);
   const [disableDelete, setDisableDelete] = useState<boolean>(true);
+  const [isResponseSuccess, setIsResponseSuccess] = useState<boolean | null>(null);
+  const [updatedDataId, setUpdatedDataId] = useState<string>("")
+  const [deletedDataId, setDeletedDataId] = useState<string>("")
+	const [deletedDataIndex, setDeletedDataIndex] = useState<number>(null)
+  const [alasan, setAlasan] = useState<string | null>(null)
+  const [isEdited, setIsEdited] = useState<boolean>(false)
+  const [showAlert, setShowAlert] = useState<boolean>(false)
 
-  const handleCallback = useCallback((data: Partial<formDataProps>) => {
+  const handleCallback = useCallback((data: any) => {
     setFormData((prev) => ({
       ...prev,
       ...data,
@@ -84,16 +94,22 @@ export default function EditKK() {
 
   // ===== CRUD HANDLERS =====
   function selectDeletedData(index: number) {
-    const data = dataAnggota[index];
+		setDeletedDataIndex(index)
+    const data : addAnddeleteDataProps = { ...deletedData,  };
     setDeletedData(data);
     setIsDeleteDataModalOpen(true);
   }
 
   function confirmDelete() {
-    setDataAnggota((prev) => prev.filter((item) => item.nama !== deletedData.nama));
     setListDeletedData((prev) => [...prev, deletedData]);
+    const deletedDataKeluarga = dataAnggota[deletedDataIndex]
+		const filterNewList = dataAnggota.filter((data, idx) => idx != deletedDataIndex)
+		setDataAnggota(filterNewList)
     setIsDeleteDataModalOpen(false);
-    setDeletedData({});
+    setListDeletedData([...listDeletedData, {
+      ...deletedDataKeluarga,
+      alasan: alasan
+    }])
   }
 
   function updateData(index: number) {
@@ -102,10 +118,7 @@ export default function EditKK() {
     setIsEditDataModalOpen(true);
   }
 
-  function saveData() {
-    if (updatedData.nama && updatedData.status && updatedData.jenis_kelamin) {
-      setListUpdatedData((prev) => [...prev, updatedData]);
-    }
+  function saveUpdatedData() {
     setIsEditDataModalOpen(false);
   }
 
@@ -120,27 +133,15 @@ export default function EditKK() {
     try {
       // gabungkan semua perubahan
       const payload: UpdateKKProps = {
-        noKk: "1234567890123456",
+        noKk: noKk,
         updateType: [
           ...(listUpdatedData.length > 0 ? ["update"] : []),
           ...(listDeletedData.length > 0 ? ["delete"] : []),
           ...(listAddedData.length > 0 ? ["add"] : []),
         ],
         latestData: dataAnggota,
-        deletedData: listDeletedData.map((d) => ({
-          nama: d.nama,
-          alasan: d.alasan,
-          status: d.status,
-          jenis_kelamin: d.jenis_kelamin,
-        })),
-        addedData: listAddedData.map((a) => ({
-          nama_lengkap: a.nama_lengkap,
-          alasan: a.alasan,
-          hubungan_keluarga: a.hubungan_keluarga,
-          jenis_kelamin: a.jenis_kelamin,
-          tempat_lahir: a.tempat_lahir,
-          tanggal_lahir: a.tanggal_lahir,
-        })),
+        deletedData: listDeletedData,
+        addedData: listAddedData
       };
 
       const newService: ServiceProps = {
@@ -156,33 +157,93 @@ export default function EditKK() {
       console.log("Payload dikirim:", newService);
 
       const response = await SubmitDataHelper("/api/pengajuan", newService);
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+        router.push('/');
+      }, 2000)
 
       console.log("Response:", response);
-      alert("Data berhasil dikirim!");
     } catch (e) {
       console.error("Gagal mengirim data:", e);
       alert("Terjadi kesalahan saat mengirim data.");
     }
   }
+  
+  
+  async function getDataKk (noKk: string) {
+    const response = await GetDataHelper(`/api/kk?noKk=${noKk}`)
+    console.log(response.data.data)
 
-  // ====== RENDER ======
+    if (response.ok){
+      setIsResponseSuccess(true)
+      setDataAnggota(response.data.data)
+    } else {
+      setIsResponseSuccess(false)
+    }
+  }
+
+  async function submitUpdatedData() {
+    try {
+      const response = await UpdateDataHelper(`/api/kk/${updatedDataId}`, formData)
+      if (response.ok) {
+        console.log(response.data);
+        await getDataKk(noKk)
+        setIsEditDataModalOpen(false);
+        setIsEdited(true)
+
+      }
+    } catch (e) {
+      console.log(e.message)
+    }
+  }
+
+    // Fetch ketiika nik 10 digit
+  useEffect(() => {
+    console.log(noKk)
+    if (noKk.length == 10) {
+      (async () => await getDataKk(noKk))()
+    } else {
+      setIsResponseSuccess(null)
+    }
+  }, [noKk])
+
+  function cancelDeleteDataAnggota(idx: number) {
+    const dataCancelled = listDeletedData[idx];
+    const filterDataList = listDeletedData.filter((data, index) => index != idx)
+    setListDeletedData(filterDataList)
+    setDataAnggota([ ...dataAnggota, dataCancelled as dataKeluargaProps ])
+  }
+
+  function cancelAddDataAnggota(idx: number) {
+    const dataCancelled = listAddedData[idx];
+    const filterDataList = listAddedData.filter((dataAnggota, index) => index != idx);
+    setListAddedData(filterDataList)
+  }
+
   return (
     <div>
+      {/* Alert */}
+      <Alert title="Berhasil membuat pengajuan" isShow={showAlert} onClose={(data) => setShowAlert(false)} prefixIcon={<CircleAlertIcon className="text-green-800" />} />
+
       {/* Modal Tambah */}
       <Modal
         title={"Tambah Data Anggota Keluarga"}
         isOpen={isAddDataModalOpen}
-        onClose={() => setIsAddDataModalOpen(false)}
+        onClose={() => {
+          setIsAddDataModalOpen(false);
+          setAlasan(null);
+        }}
       >
         <div className="p-4">
           <DropdownComponent
             getDropdownStatus={() => {}}
             data={["Kelahiran", "Menikah", "Pindah datang", "Adopsi"]}
-            label="Alasan"
-            onChange={(data) => handleCallback({ alasan: data })}
+            label="Alasan Penambahan"
+            onChange={(data) => setAlasan(data)}
             placeholder="Pilih alasan"
           />
-          <DataPribadiSection title="Data Pribadi" onChange={handleCallback} />
+          <DataPribadiSection title="" onChange={handleCallback} />
           <div className="flex justify-end mt-5">
             <Button
                 onClick={saveAddData}
@@ -197,7 +258,10 @@ export default function EditKK() {
       <Modal
         title={`Hapus Data Anggota`}
         isOpen={isDeleteDataModalOpen}
-        onClose={() => setIsDeleteDataModalOpen(false)}
+        onClose={() => {
+          setIsDeleteDataModalOpen(false);
+          setAlasan(null);
+        }}
       >
         <DropdownComponent
           getDropdownStatus={() => {}}
@@ -207,14 +271,13 @@ export default function EditKK() {
             "Perceraian",
             "Pindah Domisili",
           ]}
-          label={`Alasan pengurangan anggota "${deletedData.nama}"`}
-          onChange={(data) => setDeletedData((prev) => ({ ...prev, alasan: data }))}
+          label={`Alasan pengurangan anggota "${deletedData?.namaLengkap}"`}
+          onChange={(data) => setAlasan(data)}
           placeholder="Pilih alasan"
         />
-        <div className="flex justify-end mt-5">
+        <div className="flex justify-end mt-5 pb-16">
           <Button
             variant={undefined} size={undefined}
-            disabled={!deletedData.alasan}
             onClick={confirmDelete}
             className="bg-red-600 text-white px-4 py-2"
           >
@@ -230,16 +293,12 @@ export default function EditKK() {
         onClose={() => setIsEditDataModalOpen(false)}
       >
         <DataPribadiSection
-          defaultData={{
-            nama: updatedData.nama,
-            status: updatedData.status,
-            jenis_kelamin: updatedData.jenis_kelamin,
-          }}
+          defaultData={updatedData}
           title="Data Pribadi"
           onChange={handleCallback}
         />
         <div className="flex justify-end mt-5">
-          <Button onClick={saveData} variant={undefined} size={undefined} className="bg-sky-600 text-white px-4 py-2">
+          <Button onClick={submitUpdatedData} variant={undefined} size={undefined} className="bg-sky-600 text-white px-4 py-2">
             Simpan
           </Button>
         </div>
@@ -268,66 +327,155 @@ export default function EditKK() {
               keyname="No_KK"
               name="Nomor KK"
               dataType="number"
-              onChange={(data) => {
-                data.length >= 8 && setShowDataAnggota(true);
-              }}
+              onChange={(data) => setNoKk(data)}
               placeholder="Masukkan nomor KK"
             />
-            {showDataAnggota && (
+            {(isResponseSuccess == true && noKk.length == 10) && (
               <>
-                <div className="mt-4">
-                  <table className="w-full border">
+                <div className="mt-4 overflow-x-scroll md:overflow-x-hidden">
+                  <table className="md:w-full w-max">
                     <thead>
-                      <tr className="bg-gray-600 text-white">
-                        <th>Nama</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
+                      <tr className="bg-sky-600 text-white">
+                        <th className="text-left font-normal px-2">Nama</th>
+                        <th className="text-left font-normal px-2">Status</th>
+                        <th className="text-left font-normal px-2">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {dataAnggota.map((item, index) => (
-                        <tr key={index}>
-                          <td>{item.nama}</td>
-                          <td>{item.status}</td>
-                          <td className="flex gap-2 justify-center py-2">
+                      {dataAnggota.map((data, idx) => (
+                        <tr key={data.id} className={`${idx % 2 != 0 ? "bg-sky-100" : ""}`}>
+                          <th className="text-left font-normal px-2">{data.namaLengkap}</th>
+                          <th className="text-left font-normal px-2">{data.status}</th>
+                          <th className="text-left font-normal px-2 flex gap-3 py-1">
                             <Button
                                 variant={undefined} size={undefined}
-                                onClick={() => updateData(index)}
+                                onClick={() => {
+                                  updateData(idx);
+                                  setUpdatedDataId(data.id)
+                                }}
                                 className="bg-yellow-600 text-white"
                             >
                               Ubah
                             </Button>
                             <Button
                                 variant={undefined} size={undefined}
-                                onClick={() => selectDeletedData(index)}
+                                onClick={() => {
+                                  selectDeletedData(idx);
+                                  setDeletedDataId(data.id);
+                                }}
                                 className="bg-red-600 text-white"
                             >
                               Hapus
                             </Button>
-                          </td>
+                          </th>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-                  <div className="flex justify-center mt-5">
-                    <Button
-                        variant={undefined} size={undefined}
-                        onClick={() => setIsAddDataModalOpen(true)}
-                        className="border-2 border-sky-600 text-sky-600"
-                    >
-                      Tambah Data Baru
-                    </Button>
-                  </div>
+                </div>
+                <div className="flex justify-center mt-5">
+                  <Button
+                      variant={undefined} size={undefined}
+                      onClick={() => setIsAddDataModalOpen(true)}
+                      className="border-2 border-sky-600 text-sky-600"
+                  >
+                    Tambah Data Baru
+                  </Button>
                 </div>
               </>
             )}
+
+            {(isResponseSuccess == false && noKk.length == 10) && (
+              <div className="flex bg-red-100 px-5 py-3 space-x-4 mt-2 items-center rounded-2xl">
+                  <span>
+                      <CircleAlert size={30} className="text-red-700" />
+                  </span>
+                  <span className="">
+                      <h3 className="font-semibold text-red-700 text-sm">Data nomor KK tidak ditemukan</h3>
+                  </span>
+              </div>
+            )}
+
+            {listDeletedData.length > 0 && (
+              <>
+								<h1 className="mt-5">Data yang dihapus</h1>
+                <div className="mt-4 overflow-x-scroll md:overflow-x-hidden">
+                  <table className="md:w-full w-max">
+                    <thead>
+                      <tr className="bg-red-600 text-white">
+                        <th className="text-left font-normal px-2">Nama</th>
+                        <th className="text-left font-normal px-2">Alasan</th>
+                        <th className="text-left font-normal px-2">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {listDeletedData.map((data, idx) => (
+                        <tr key={idx} className={`${idx % 2 != 0 ? "bg-sky-100" : ""}`}>
+                          <th className="text-left font-normal px-2">{data.namaLengkap}</th>
+                          <th className="text-left font-normal px-2">{data.alasan}</th>
+                          <th className="text-left font-normal px-2 flex gap-3 py-1">
+                            <Button
+                                variant={undefined} size={undefined}
+                                onClick={() => {
+                                  cancelDeleteDataAnggota(idx);
+                                }}
+                                className="bg-red-600 text-white"
+                            >
+                              Batalkan
+                            </Button>
+                          </th>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                </>
+            )}
+
+            {listAddedData.length > 0 && (
+              <>
+								<h1 className="mt-5">Data yang ditambahkan</h1>
+                <div className="mt-4 overflow-x-scroll md:overflow-x-hidden">
+                  <table className="md:w-full w-max">
+                    <thead>
+                      <tr className="bg-green-600 text-white">
+                        <th className="text-left font-normal px-2">Nama</th>
+                        <th className="text-left font-normal px-2">Status</th>
+                        <th className="text-left font-normal px-2">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {listAddedData.map((data, idx) => (
+                        <tr key={idx} className={`${idx % 2 != 0 ? "bg-sky-100" : ""}`}>
+                          <th className="text-left font-normal px-2">{data.namaLengkap}</th>
+                          <th className="text-left font-normal px-2">{data.status}</th>
+                          <th className="text-left font-normal px-2 flex gap-3 py-1">
+                            <Button
+                                variant={undefined} size={undefined}
+                                onClick={() => cancelAddDataAnggota(idx)}
+                                className="bg-red-600 text-white"
+                            >
+                              Batalkan
+                            </Button>
+                          </th>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
+
             {(listDeletedData.length > 0 ||
-              listUpdatedData.length > 0 ||
+              isEdited ||
               listAddedData.length > 0) && (
               <div className="flex justify-end mt-8">
                 <Button
                     variant={undefined} size={undefined}
-                    onClick={() => setAccordionActive(2)}
+                    onClick={() => {
+                      setCurrentStep(2)
+                      setAccordionActive(2);
+                    }}
                     className="bg-sky-600 text-white"
                 >
                   Lanjut
@@ -354,12 +502,21 @@ export default function EditKK() {
                 {isAllDocDownloaded ? <Check size={18} /> : <Download size={18} />}
                 <p>Formulir Isian KK</p>
               </span>
+              <span className="flex items-center space-x-2">
+                {isAllDocDownloaded ? <Check size={18} /> : <Download size={18} />}
+                <p>Formulir Pendaftaran Peristiwa</p>
+              </span>
+              <span className="flex items-center space-x-2">
+                {isAllDocDownloaded ? <Check size={18} /> : <Download size={18} />}
+                <p>Formulir Pernyatan Perubahan Elemen</p>
+              </span>
             </div>
             <div className="pt-4 flex justify-end">
               <Button
                 variant={undefined} size={undefined}
                 onClick={() => {
                   if (isAllDocDownloaded) {
+                    setCurrentStep(3)
                     setAccordionActive(3);
                   } else {
                     setAllDocDownloaded(true);
@@ -383,7 +540,7 @@ export default function EditKK() {
         >
           <div>
             <h3 className="text-sm py-4 text-gray-400">
-              Upload file yang sudah ditandatangani (PDF)
+              Scan file pengajuan yang telah ditandatangani kemudian upload dalam bentuk PDF
             </h3>
             <div className="flex flex-col space-y-3">
               <FileInput id="form_isian_kk" label="Formulir Isian KK" />

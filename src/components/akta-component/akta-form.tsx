@@ -14,7 +14,8 @@ type PelaporFormProps = {
     label: string,
     formTitle: string,
     isParent?: boolean,
-    buttonName?: string
+    buttonName?: string,
+    onDataChange?: (data: any) => void
 }
 
 type StatusProps =  {
@@ -25,6 +26,7 @@ export function PelaporForm({ label, formTitle, isParent = false, buttonName = '
     const [isModalOpen, setModalOpen] = useState<boolean>(false);
     const [selectedName, setSelectedName] = useState<string>('');
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+    const [form, setForm] = useState({})
 
     return (
         <>

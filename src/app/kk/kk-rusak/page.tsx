@@ -70,8 +70,8 @@ export default function KKRusak() {
             const response = await SubmitDataHelper("/api/pengajuan", payload);
             if (response.ok) {
                 console.log(response)
+                setShowAlert(true)
                 setTimeout(() => {
-                    setShowAlert(false)
                     router.push("/")
                 }, 2000)
             } else {

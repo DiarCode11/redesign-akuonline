@@ -1,4 +1,6 @@
+import { InternalServerError, NotFound, Ok } from "@/helper/jsonResponseHelper";
 import { db } from "@/lib/firebase-admin";
+import { ServiceProps } from "@/lib/save-to-local-storage";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
@@ -51,5 +53,24 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
             { message: "Terjadi kesalahan di server" },
             { status: 500 }
         )
+    }
+}
+
+export async function PUT(req: NextRequest, { params } : { params : { id: string} } ) {
+    try {
+        const id = params.id
+        const data : ServiceProps = await req.json()
+        const docRef = db.collection("pengajuan").doc(id);
+        const snapshot = await docRef.get()
+
+        if (!snapshot.exists) {
+            return NotFound("Data tidak ditemukan")
+        }
+        await docRef.update(data);
+
+        return Ok("Berhasil memperbarui data")
+    } catch (e) {
+        console.log(e?.message)
+        return InternalServerError(e?.message)
     }
 }

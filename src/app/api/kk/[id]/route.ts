@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/firebase-admin";
+import { Timestamp } from "firebase-admin/firestore";
+import { InternalServerError, Ok } from "@/helper/jsonResponseHelper";
 
 // GET: Ambil KK berdasarkan ID
 export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
@@ -16,15 +18,16 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
   }
 }
 
+
 // PUT: Update KK berdasarkan ID
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const body = await req.json();
-    await db.collection("kk").doc(params.id).update(body);
+    await db.collection("kk").doc(params.id).update({ ...body, createdAt: Timestamp.now() });
 
-    return NextResponse.json({ ok: true, message: "Data KK berhasil diperbarui" });
+    return Ok("Data KK berhasil diperbarui")
   } catch (error) {
-    return NextResponse.json({ ok: false, message: "Gagal memperbarui data KK" }, { status: 500 });
+    return InternalServerError(error?.message)
   }
 }
 

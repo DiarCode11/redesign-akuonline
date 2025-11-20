@@ -200,3 +200,5 @@ export const kabupaten_list = [
     "KABUPATEN 8",
     "KABUPATEN 9",
 ]
+
+export  const jenis_akta  = ['Kelahiran', 'Kematian', 'Perkawinan', 'Perceraian', 'Pengakuan Anak', 'Adopsi Anak', 'Pengesahan Anak'];

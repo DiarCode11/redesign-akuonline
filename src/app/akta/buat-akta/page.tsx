@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Check, Download } from "lucide-react";
+import { ArrowLeft, Check, CircleAlertIcon, Download } from "lucide-react";
 import Accordion from "@/components/accordion";
 import { ReactNode, useCallback, useState } from "react";
 import InputComponent from "@/components/form-component/input-component";
@@ -9,6 +9,11 @@ import { Button } from "@/components/ui/button";
 import RadioComponent from "@/components/form-component/radio-component";
 import AktaForm, { jenisAktaProps } from "@/components/akta-component/akta-view-form";
 import FileInput from "@/components/form-component/fileinput-component";
+import { ServiceProps } from "@/lib/save-to-local-storage";
+import { SubmitDataHelper } from "@/helper/submitDataHelper";
+import { useAuth } from "@/context/authContext";
+import { useRouter } from "next/navigation";
+import Alert from "@/components/alert";
 
 export default function BuatAkta() {
     const [NoKK, setNoKK] = useState<string>('');
@@ -19,6 +24,9 @@ export default function BuatAkta() {
         currentStep: 1,
         accordionActive: 1,
     });
+    const [showAlert, setShowAlert] = useState<boolean>(false)
+    const auth = useAuth();
+    const router = useRouter()
 
     const dataAnggota = [
         { nama: 'I Wayan Yoga Sastrawan', status: 'Kepala Keluarga', jenis_kelamin: 'Laki-laki' },
@@ -46,8 +54,41 @@ export default function BuatAkta() {
         }));
     }, []);
 
+    async function saveData() {
+        try {
+            const payload : ServiceProps = {
+                userId: auth.id,
+                userName: auth.name,
+                serviceType: `Akta ${jenisAktaSelected}`,
+                serviceName: `Pembuatan Akta ${jenisAktaSelected}`,
+                description: `Pengajuan pembuatan Akta ${jenisAktaSelected}`,
+                createdAt: new Date(),
+                data: {
+                    noKk: NoKK,
+                    jenisAkta: jenisAktaSelected
+                }
+            } 
+
+            const response = await SubmitDataHelper("/api/pengajuan", payload);
+            if (response.ok) {
+                console.log(response.data)
+                setShowAlert(true)
+                setTimeout(() => {
+                    router.push("/")
+                }, 2000)
+            } else {
+                console.log(response)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     return (
         <>
+            {/* Alert */}
+            <Alert title="Berhasil membuat pengajuan" isShow={showAlert} onClose={(data) => setShowAlert(false)} prefixIcon={<CircleAlertIcon className="text-green-800" />} />
+
             <div className="flex space-x-6 items-center pb-10">
                 <Link href={"/"}>
                     <ArrowLeft />
@@ -233,11 +274,9 @@ export default function BuatAkta() {
                         { jenisAktaSelected === 'Pengesahan Anak' && <FileInput onChange={() => {}} id="form_persetujuan" label="Surat Keterangan Perkawinan dari Pemuka Agama" /> }
                     </div>
                     <div className="flex justify-end pt-5">
-                        <Link href={'/'}>
-                            <Button variant="primary" size="md" className="bg-sky-600 text-white px-4 py-2">
-                                Selesai
-                            </Button>
-                        </Link>
+                        <Button onClick={() => saveData()} variant="primary" size="md" className="bg-sky-600 text-white px-4 py-2">
+                            Selesai
+                        </Button>
                     </div>
                 </Accordion>
             </div>

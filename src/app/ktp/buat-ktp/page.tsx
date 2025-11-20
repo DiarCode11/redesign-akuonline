@@ -58,9 +58,7 @@ export default function BuatKTP() {
             const response = await SubmitDataHelper("/api/pengajuan", payload);
             if (response.ok) {
                 console.log(response)
-                setTimeout(() => {
-                    setShowAlert(false)
-                }, 2000)
+                setShowAlert(true)
             } else {
                 console.log(response)
             }

@@ -15,6 +15,7 @@ type Props = {
 export default function DetailPengajuan() {
     const [data, setData] = useState<ServiceProps | null>(null);
     const [isModalDeleteOpen, setIsModalDeleteOpen] = useState<boolean>(false);
+    const [activeStage, setActiveStage] = useState<number>(1)
     const params = useParams();
     const router = useRouter();
     const id = params?.id
@@ -51,28 +52,18 @@ export default function DetailPengajuan() {
         }
     } 
 
-    const [dataAnggota, setDataAnggota] = useState<any[]>([
-        {
-            id: 1,
-            nama: 'I Wayan Yoga Sastrawan',
-            status: 'Kepala Keluarga',
-            jenis_kelamin: 'Laki-laki'
-        },
-        {
-            id: 2,
-            nama: 'John Smith',
-            status: 'Saudara',
-            jenis_kelamin: 'Laki-laki'
-        },
-        {
-            id: 3,
-            nama: 'Mariah Maclach',
-            status: 'Istri',
-            jenis_kelamin: 'Perempuan'
+    useEffect(() => {
+        if (activeStage <= 3) {
+            const interval = setInterval(() => {
+                setActiveStage(activeStage + 1)
+            }, 3000)
+
+            return () => {
+                console.log('Membersihkan interval...');
+                clearInterval(interval);
+            };
         }
-    ])
-
-
+    }, [activeStage])
 
     return (
         <>
@@ -100,22 +91,22 @@ export default function DetailPengajuan() {
             <div className="w-full bg-white rounded-2xl p-5 mb-5 shadow-md">
                 <h1 className="font-semibold">Status Pengajuan</h1>
                 <div className="flex justify-between mt-3 relative">
-                    <span className="h-1 w-1/2 ml-5 bg-gray-200 absolute x-5 translate-y-4"></span>
-                    <span className="h-1 w-1/2 right-5 bg-gray-200 absolute x-5 translate-y-4"></span>
+                    <span className={`${ activeStage >= 2 ? "primary-color" : "bg-gray-200" } h-1 w-1/2 ml-5 absolute x-5 translate-y-4`}></span>
+                    <span className={`${ activeStage >= 3 ? "primary-color" : "bg-gray-200" } h-1 w-1/2 right-5 absolute x-5 translate-y-4`}></span>
                     <div className="z-10">
-                        <div className="w-10 h-10 mx-auto rounded-full primary-color flex justify-center items-center font-bold text-white">
+                        <div className={`${ activeStage >= 1 ? "primary-color" : "bg-gray-200" } w-10 h-10 mx-auto rounded-full p-color flex justify-center items-center font-bold text-white`}>
                             1
                         </div>
                         <span>Diterima</span>
                     </div>
                     <div className="z-10">
-                        <div className="w-10 h-10 mx-auto rounded-full bg-gray-300 flex justify-center items-center font-bold text-white">
+                        <div className={`${ activeStage >= 2 ? "primary-color" : "bg-gray-200" } w-10 h-10 mx-auto rounded-full flex justify-center items-center font-bold text-white`}>
                             2
                         </div>
                         <span>Diproses</span>
                     </div>
                     <div className="z-10">
-                        <div className="w-10 h-10 mx-auto rounded-full bg-gray-300 flex justify-center items-center font-bold text-white">
+                        <div className={`${ activeStage >= 3 ? "primary-color" : "bg-gray-200" } w-10 h-10 mx-auto rounded-full flex justify-center items-center font-bold text-white`}>
                             3
                         </div>
                         <span>Selesai</span>
@@ -155,14 +146,24 @@ export default function DetailPengajuan() {
                 </table>
             </div>
             
-            <div className="w-full grid grid-cols-2 mt-3 gap-6">
-                <Button variant={'primary'} onClick={() => setIsModalDeleteOpen(true)} className={"bg-red-500 text-white py-3"} size={'md'}>
-                    Batalkan pengajuan
-                </Button>
-                <Button variant={'primary'} className={"bg-sky-500 text-white py-3"} size={'md'}>
-                    Ubah pengajuan
-                </Button>
-            </div>
+            { activeStage >= 3 ? (
+                <div className="w-full grid grid-cols-1 mt-3 gap-6">
+                    <Button variant={'primary'} onClick={() => {}} className={"bg-green-500 text-white py-3 cursor-pointer"} size={'md'}>
+                        Download Dokumen
+                    </Button>
+                </div>
+            ) : (
+                <div className="w-full grid grid-cols-2 mt-3 gap-6">
+                    <Button variant={'primary'} onClick={() => setIsModalDeleteOpen(true)} className={"bg-red-500 text-white py-3 cursor-pointer"} size={'md'}>
+                        Batalkan pengajuan
+                    </Button>
+                    <Link href={`/ubah-pengajuan/${id}`}>
+                        <Button variant={'primary'} className={"bg-sky-500 text-white py-3 w-full cursor-pointer"} size={'md'}>
+                            Ubah pengajuan
+                        </Button>
+                    </Link>
+                </div>
+            ) }
         </>
     )
 }

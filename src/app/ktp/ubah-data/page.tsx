@@ -70,6 +70,10 @@ export default function EditKTP() {
     const [kecamatan, setKecamatan] = useState<string>("");
     const [desaList, setDesaList] = useState<string[]>([]);
 
+    useEffect(() => {
+        console.log("Data KTP: ", dataKtp)
+    }, [dataKtp])
+
     async function saveData() {
         try {
             const payload : ServiceProps = {
@@ -84,9 +88,9 @@ export default function EditKTP() {
 
             const response = await SubmitDataHelper("/api/pengajuan", payload);
             if (response.ok) {
-                console.log(response)
+                console.log(response.data)
+                setShowAlert(true)
                 setTimeout(() => {
-                    setShowAlert(false)
                     router.push("/")
                 }, 2000)
             } else {
@@ -433,13 +437,11 @@ export default function EditKTP() {
                         <FileInput onChange={() => {}} id="scan_kk" label="Scan Kartu Keluarga" />
                     </div>
                     <div className="pt-10 flex justify-end">
-                        <Link href={'/'}>
-                            <Button 
-                                onClick={() => saveData()}
-                                className={'bg-sky-600 text-white px-4 py-2'} size={'md'} variant={'primary'}>
-                                Lanjut
-                            </Button>
-                        </Link>
+                        <Button 
+                            onClick={() => saveData()}
+                            className={'bg-sky-600 text-white px-4 py-2'} size={'md'} variant={'primary'}>
+                            Lanjut
+                        </Button>
                     </div>
                 </Accordion>
             </div>

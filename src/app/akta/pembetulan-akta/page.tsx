@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Check, Download } from "lucide-react";
+import { ArrowLeft, Check, CircleAlertIcon, Download } from "lucide-react";
 import Accordion from "@/components/accordion";
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import InputComponent from "@/components/form-component/input-component";
@@ -10,48 +10,17 @@ import RadioComponent from "@/components/form-component/radio-component";
 import AktaForm, { jenisAktaProps } from "@/components/akta-component/akta-view-form";
 import FileInput from "@/components/form-component/fileinput-component";
 import DropdownComponent from "@/components/form-component/dropdown-component";
-import tr from "zod/v4/locales/tr.cjs";
+import { jenis_akta, VILLAGE_DATA } from "@/lib/config";
+import { ServiceProps } from "@/lib/save-to-local-storage";
+import { useAuth } from "@/context/authContext";
+import { useRouter } from "next/navigation";
+import { SubmitDataHelper } from "@/helper/submitDataHelper";
+import Alert from "@/components/alert";
 
-const village_data: Record<string, string[]> = {
-  "Banjar": [
-    "Banjar", "Banjar Tegeha", "Banyuatis", "Banyuseri", "Cempaga", "Dencarik", "Gesing", "Gobleg",
-    "Kaliasem", "Kayuputih", "Munduk", "Pedawa", "Sidetapa", "Tampekan", "Temukus", "Tigawasa", "Tirtasari"
-  ],
-  "Buleleng": [
-    "Alasangker", "Anturan", "Bakti Seraga", "Jinengdalem", "Kalibukbuk", "Nagasepaha", "Pemaron", "Penglatan",
-    "Petandakan", "Poh Bergong", "Sari Mekar", "Tukadmungga",
-    "Astina", "Banjar Bali", "Banjar Jawa", "Banjar Tegal", "Banyuasri", "Banyuning", "Beratan", "Kaliuntu",
-    "Kampung Anyar", "Kampung Baru", "Kampung Bugis", "Kampung Kajanan", "Kampung Singaraja", "Kendran",
-    "Liligundi", "Paket Agung", "Penarukan"
-  ],
-  "Busung Biu": [
-    "Bengkel", "Bongancina", "Busung Biu", "Kedis", "Kekeran", "Pelapuan", "Pucaksari", "Sepang", "Sepang Kelod",
-    "Subuk", "Telaga", "Tinggarsari", "Tista", "Titab", "Umejero"
-  ],
-  "Gerokgak": [
-    "Banyupoh", "Celukanbawang", "Gerokgak", "Musi", "Patas", "Pejarakan", "Pemuteran", "Pengulon", "Penyabangan",
-    "Sanggalangit", "Sumberklampok", "Sumberkima", "Tinga-Tinga", "Tukadsumaga"
-  ],
-  "Kubutambahan": [
-    "Bengkala", "Bila", "Bontihing", "Bukti", "Bulian", "Depeha", "Kubutambahan", "Mengening", "Pakisan",
-    "Tajun", "Tambakan", "Tamblang", "Tunjung"
-  ],
-  "Sawan": [
-    "Bebetin", "Bungkulan", "Galungan", "Giri Emas", "Jagaraga", "Kerobokan", "Lemukih", "Menyali", "Sangsit",
-    "Sawan", "Sekumpul", "Sinabun", "Sudaji", "Suwug"
-  ],
-  "Seririt": [
-    "Banjar Asem", "Bestala", "Bubunan", "Gunungsari", "Joanyar", "Kalianget", "Kalisada", "Lokapaksa",
-    "Mayong", "Munduk Bestala", "Pangkung Paruk", "Patemon", "Pengastulan", "Rangdu", "Ringdikit",
-    "Sulanyah", "Tangguwisia", "Ularan", "Umeanyar", "Unggahan", "Seririt"
-  ],
-  "Sukasada": [
-    "Ambengan", "Git Git", "Kayu Putih", "Padang Bulia", "Pancasari", "Panji", "Panji Anom", "Pegadungan",
-    "Pegayaman", "Sambangan", "Selat", "Silangjana", "Tegal Linggah", "Wanagiri", "Sukasada"
-  ],
-  "Tejakula": [
-    "Bondalem", "Julah", "Les", "Madenan", "Pacung", "Penuktukan", "Sambirenteng", "Sembiran", "Tejakula", "Tembok"
-  ]
+export type PembetulanKkProps = {
+    kecamatan: string,
+    desa: string,
+    jenisAkta: string
 }
 
 export default function PembetulanAkta() {
@@ -59,10 +28,19 @@ export default function PembetulanAkta() {
     const [isAllDocDownloaded, setAllDocDownloaded] = useState<boolean>(false);
     const [overflowStatus, setOverflowStatus] = useState<boolean>(true);
     const [accordionStatus, setAccordionStatus] = useState<boolean>(true);
+    const [showAlert, setShowAlert] = useState<boolean>(false)
     const [formState, setFormState] = useState<{ currentStep: number; accordionActive: number }>({
         currentStep: 1,
         accordionActive: 1,
     });
+
+    const [dataAkta, setDataAkta] = useState<Partial<PembetulanKkProps>>({});
+    const auth = useAuth()
+    const router = useRouter()
+
+    useEffect(() => {
+        console.log(dataAkta)
+    }, [dataAkta])
 
     const handleVillages = useCallback((villages: string[]) => {
         setVillages(villages);
@@ -82,8 +60,38 @@ export default function PembetulanAkta() {
         }
     }, [formState.accordionActive])
 
+    async function saveData() {
+        try {
+            const payload : ServiceProps = {
+                userId: auth.id,
+                userName: auth.name,
+                serviceType: `Akta ${dataAkta.jenisAkta}`,
+                serviceName: `Perubahan Data Akta ${dataAkta.jenisAkta}`,
+                description: `Pengajuan perubahan data Akta ${dataAkta.jenisAkta}`,
+                createdAt: new Date(),
+                data: dataAkta
+            } 
+
+            const response = await SubmitDataHelper("/api/pengajuan", payload);
+            if (response.ok) {
+                console.log(response.data)
+                setShowAlert(true)
+                setTimeout(() => {
+                    router.push("/")
+                }, 2000)
+            } else {
+                console.log(response)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     return (
         <>
+            {/* Alert */}
+            <Alert title="Berhasil membuat pengajuan" isShow={showAlert} onClose={(data) => setShowAlert(false)} prefixIcon={<CircleAlertIcon className="text-green-800" />} />
+
             <div className="flex space-x-6 items-center pb-10">
                 <Link href={"/"}>
                     <ArrowLeft />
@@ -114,8 +122,36 @@ export default function PembetulanAkta() {
                     }}
                 >
                     <div className="py-4 grid sm:grid-cols-2 gap-4">
-                        <DropdownComponent getDropdownStatus={(status) => {status && setOverflowStatus(false)} } data={Object.keys(village_data)} label="Kecamatan" onChange={(data) => {handleVillages(village_data[data])}} placeholder="Pilih kecamatan" />
-                        <DropdownComponent getDropdownStatus={(status) => {status && setOverflowStatus(false)} } data={villages} label="Desa" onChange={() => {}} placeholder="Pilih desa" />
+                        <DropdownComponent 
+                            getDropdownStatus={(status) => {status && setOverflowStatus(false)} } 
+                            data={Object.keys(VILLAGE_DATA)} 
+                            label="Kecamatan" 
+                            onChange={(data) => {
+                                handleVillages(VILLAGE_DATA[data]);
+                                setDataAkta((prev) => ({
+                                    ...prev, kecamatan: data
+                                }))
+                            }} 
+                            placeholder="Pilih kecamatan" 
+                        />
+                        <DropdownComponent 
+                            getDropdownStatus={(status) => {status && setOverflowStatus(false)} } 
+                            data={villages} 
+                            label="Desa" 
+                            onChange={(data) => setDataAkta((prev) => ({
+                                ...prev, desa: data
+                            }))} 
+                            placeholder="Pilih desa" 
+                        />
+                        <DropdownComponent 
+                            getDropdownStatus={(status) => {status && setOverflowStatus(false)} } 
+                            data={jenis_akta} 
+                            label="Jenis akta" 
+                            onChange={(data) => setDataAkta((prev) => ({
+                                ...prev, jenisAkta: data
+                            }))} 
+                            placeholder="Pilih jenis akta" 
+                        />
                     </div> 
                     <div className="flex justify-end pt-5">
                         <Button onClick={() => nextToStep(2)} variant="primary" size="md" className="bg-sky-600 text-white px-4 py-2">
@@ -212,11 +248,9 @@ export default function PembetulanAkta() {
                         <FileInput onChange={() => {}} id="perubahan_elemen" label="Scan Kartu Keluarga" />
                     </div>
                     <div className="flex justify-end pt-5">
-                        <Link href={'/'}>
-                            <Button variant="primary" size="md" className="bg-sky-600 text-white px-4 py-2">
-                                Selesai
-                            </Button>
-                        </Link>
+                        <Button onClick={() => saveData()} variant="primary" size="md" className="bg-sky-600 text-white px-4 py-2">
+                            Selesai
+                        </Button>
                     </div>
                 </Accordion>
             </div>

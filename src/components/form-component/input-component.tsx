@@ -49,7 +49,7 @@ export default function InputComponent({name, placeholder, keyname, dataType, er
             <input
                 type={type}
                 id={keyname}
-                value={value}
+                value={value ?? ""}
                 placeholder={placeholder}
                 disabled={disabled}
                 onChange={handleChange}

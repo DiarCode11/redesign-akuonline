@@ -2,14 +2,23 @@
 import Accordion from "@/components/accordion";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CircleAlertIcon } from "lucide-react";
 import InputComponent from "@/components/form-component/input-component";
 import { Button } from "@/components/ui/button";
 import DatePickerComponent from "@/components/form-component/datepicker-component";
 import { Check } from "lucide-react";
 import { Download } from "lucide-react";
 import FileInput from "@/components/form-component/fileinput-component";
+import { ServiceProps } from "@/lib/save-to-local-storage";
+import { useAuth } from "@/context/authContext";
+import { useRouter } from "next/navigation";
+import { SubmitDataHelper } from "@/helper/submitDataHelper";
+import Alert from "@/components/alert";
 
+interface KkHilangProps {
+    NoKtpPemohon: string,
+    TanggalKehilangan: string
+}
 
 export default function KTPHilang() {
     const [accordionActive, setAccordionActive] = useState<number>(1);
@@ -18,6 +27,13 @@ export default function KTPHilang() {
     const [isAccordionOpen, setIsAccordionOpen] = useState<boolean>(true);
     const [isOpenCalendar, setIsOpenCalendar] = useState<boolean>(false);
     const [isAllDocDownloaded, setAllDocDownloaded] = useState<boolean>(false);
+    const [dataKehilangan, setDataKehilangan] = useState<KkHilangProps>({
+        NoKtpPemohon: "",
+        TanggalKehilangan: ""
+    })
+    const [showAlert, setShowAlert] = useState<boolean>(false)
+    const auth = useAuth()
+    const router = useRouter()
 
     function accordionStatus(status: boolean) {
         if (!status) {
@@ -43,8 +59,36 @@ export default function KTPHilang() {
         setAccordionActive(step);
     }
 
+     async function submitData() {
+        try {
+            const payload : ServiceProps = {
+                userId: auth.id,
+                userName: auth.name,
+                serviceType: "KTP",
+                serviceName: "Kehilangan KTP",
+                description: "Pengajuan pembuatan KTP baru karena kehilangan",
+                createdAt: new Date(),
+                data: dataKehilangan
+            } 
+
+            const response = await SubmitDataHelper("/api/pengajuan", payload);
+            if (response.ok) {
+                console.log(response)
+                setShowAlert(true)
+                setTimeout(() => {
+                    router.push("/")
+                }, 2000)
+            } else {
+                console.log(response)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     return (
         <>
+            <Alert title="Berhasil membuat pengajuan" isShow={showAlert} onClose={(data) => setShowAlert(false)} prefixIcon={<CircleAlertIcon className="text-green-800" />} />
             <div className="flex space-x-6 items-center pb-10">
                 <Link href={"/"}>
                     <ArrowLeft />
@@ -73,13 +117,17 @@ export default function KTPHilang() {
                             name="Nomor KTP Pemohon"
                             dataType="number"
                             onChange={(data) => {
-                                
+                                setDataKehilangan((prev) => ({
+                                    ...prev, NoKtpPemohon: data
+                                }))
                             }}
                             placeholder="Masukkan nomor KTP"
                         />
                         <DatePickerComponent
                             label="Tanggal Kehilangan"
-                            onChange={() => {}}
+                            onChange={(data) => setDataKehilangan((prev) => ({
+                                ...prev, TanggalKehilangan: data
+                            }))}
                             showCalendar={isOpenCalendar}
                             getToggleStatus={(status) => {setOverflowStatus(status)}}
                         />
@@ -152,14 +200,13 @@ export default function KTPHilang() {
                         <FileInput onChange={() => {}} id="pendaftaran_peristiwa" label="Surat Keterangan Kehilangan dari Kepolisian" />
                     </div>
                     <div className="pt-10 flex justify-end">
-                        <Link href={'/'}>
-                            <Button onClick={() => {
-                                    setOverflowStatus(true);
-                                } } 
-                                className={'bg-sky-600 text-white px-4 py-2'} size={'md'} variant={'primary'}>
-                                Simpan
-                            </Button>
-                        </Link>
+                        <Button onClick={() => {
+                                setOverflowStatus(true);
+                                submitData()
+                            } } 
+                            className={'bg-sky-600 text-white px-4 py-2'} size={'md'} variant={'primary'}>
+                            Simpan
+                        </Button>
                     </div>
                 </Accordion>
             </div>

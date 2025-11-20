@@ -2,7 +2,7 @@
 import Accordion from "@/components/accordion";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CircleAlertIcon } from "lucide-react";
 import InputComponent from "@/components/form-component/input-component";
 import { Button } from "@/components/ui/button";
 import DatePickerComponent from "@/components/form-component/datepicker-component";
@@ -15,9 +15,8 @@ import { SubmitDataHelper } from "@/helper/submitDataHelper";
 import Alert from "@/components/alert";
 import { useRouter } from "next/navigation";
 
-type dataKtpProps = {
-    nikPemohon: string,
-    tglKehilangan: string,
+type dataKtpRusakProps = {
+    NoKk: string,
 }
 
 export default function KTP_Rusak() {
@@ -27,7 +26,7 @@ export default function KTP_Rusak() {
     const [isAccordionOpen, setIsAccordionOpen] = useState<boolean>(true);
     const [isOpenCalendar, setIsOpenCalendar] = useState<boolean>(false);
     const [isAllDocDownloaded, setAllDocDownloaded] = useState<boolean>(false);
-    const [dataKtp, setDataKtp] = useState<Partial<dataKtpProps>>({});
+    const [dataKtp, setDataKtp] = useState<Partial<dataKtpRusakProps>>({});
     const [showAlert, setShowAlert] = useState<boolean>(false);
     
     const auth = useAuth()
@@ -63,8 +62,8 @@ export default function KTP_Rusak() {
                 userId: auth.id,
                 userName: auth.name,
                 serviceType: "KTP",
-                serviceName: "Perubahan Data KTP",
-                description: "Pengajuan pembaruan data KTP",
+                serviceName: "Pembuatan Data KTP",
+                description: "Pengajuan pembuatan data KTP karena rusak",
                 createdAt: new Date(),
                 data: dataKtp
             } 
@@ -72,8 +71,8 @@ export default function KTP_Rusak() {
             const response = await SubmitDataHelper("/api/pengajuan", payload);
             if (response.ok) {
                 console.log(response)
+                setShowAlert(true)
                 setTimeout(() => {
-                    setShowAlert(false)
                     router.push("/")
                 }, 2000)
             } else {
@@ -86,6 +85,8 @@ export default function KTP_Rusak() {
 
     return (
         <>
+            <Alert title="Berhasil membuat pengajuan" isShow={showAlert} onClose={(data) => setShowAlert(false)} prefixIcon={<CircleAlertIcon className="text-green-800" />} />
+
             <div className="flex space-x-6 items-center pb-10">
                 <Link href={"/"}>
                     <ArrowLeft />
@@ -114,7 +115,9 @@ export default function KTP_Rusak() {
                             name="Nomor KTP Pemohon"
                             dataType="number"
                             onChange={(data) => {
-                                
+                                setDataKtp((prev) => ({
+                                    ...prev, NoKk: data
+                                }))
                             }}
                             placeholder="Masukkan nomor KTP"
                         />
@@ -187,14 +190,13 @@ export default function KTP_Rusak() {
                         <FileInput onChange={() => {}} id="pendaftaran_peristiwa" label="Scan KTP yang Rusak" />
                     </div>
                     <div className="pt-10 flex justify-end">
-                        <Link href={'/'}>
-                            <Button onClick={() => {
-                                    setOverflowStatus(true);
-                                } } 
-                                className={'bg-sky-600 text-white px-4 py-2'} size={'md'} variant={'primary'}>
-                                Simpan
-                            </Button>
-                        </Link>
+                        <Button onClick={() => {
+                                setOverflowStatus(true);
+                                saveData()
+                            } } 
+                            className={'bg-sky-600 text-white px-4 py-2'} size={'md'} variant={'primary'}>
+                            Simpan
+                        </Button>
                     </div>
                 </Accordion>
             </div>

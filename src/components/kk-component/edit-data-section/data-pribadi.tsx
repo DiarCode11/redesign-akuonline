@@ -3,6 +3,9 @@ import DropdownComponent from "@/components/form-component/dropdown-component"
 import RadioComponent from "@/components/form-component/radio-component";
 import DatePickerComponent from "@/components/form-component/datepicker-component";
 import { useEffect, useState } from "react";
+import { dataKeluargaProps } from "@/app/kk/edit-kk/page";
+import { hubunganKeluarga, pendidikanList, pilihan_pekerjaan_kk } from "@/lib/config";
+import { convertDateToYYYYMMDD } from "@/helper/dateStringConverter";
 
 
 export type DataPribadiProps = {
@@ -27,153 +30,13 @@ type defaultDataProps = {
 
 type DataPribadi = {
     title : string
-    defaultData? : defaultDataProps
+    defaultData? : dataKeluargaProps
     onChange: (value: Partial<DataPribadiProps>) => void
 };
 
-export const hubunganKeluarga = [
-    "Kepala Keluarga",
-    "Istri",
-    "Anak",
-    "Menantu",
-    "Cucu",
-    "Orang Tua",
-    "Mertua",
-    "Famili Lain",
-    "Lainnya"
-];
 
-const defaultValue : defaultDataProps = {
-    jenis_kelamin: "",
-    nama: "",
-    status: ""
-}
-
-export default function DataPribadiSection({ title, defaultData = defaultValue, onChange }: DataPribadi) {
-    const [dataPribadi, setDataPribadi] = useState<Partial<DataPribadiProps>>({});
-    function isDataNull() {
-        const isNull = defaultData.nama === "" && 
-                        defaultData.jenis_kelamin === "" && 
-                        defaultData.status === "";
-        return isNull; 
-    }
-
-
-    const pendidikanList = [
-        "Tidak/belum Sekolah",
-        "Belum Tamat SD",
-        "Tamat SD/sederajat",
-        "SMP/sederajat",
-        "SMA/sederajat",
-        "D1",
-        "D2",
-        "D3",
-        "D4/S1",
-        "S2",
-        "S3"
-    ];
-
-    const pilihan_pekerjaan_kk = [
-        "Belum / Tidak Bekerja",
-        "Mengurus Rumah Tangga",
-        "Pelajar / Mahasiswa",
-        "Pensiunan",
-        "Pegawai Negeri Sipil (PNS)",
-        "Tentara Nasional Indonesia (TNI)",
-        "Kepolisian RI (POLRI)",
-        "Perdagangan",
-        "Petani / Pekebun",
-        "Peternak",
-        "Nelayan / Perikanan",
-        "Industri",
-        "Konstruksi",
-        "Transportasi",
-        "Karyawan Swasta",
-        "Karyawan BUMN",
-        "Karyawan BUMD",
-        "Karyawan Honorer",
-        "Buruh Harian Lepas",
-        "Buruh Tani / Perkebunan",
-        "Buruh Nelayan / Perikanan",
-        "Buruh Peternakan",
-        "Pembantu Rumah Tangga",
-        "Tukang Cukur",
-        "Tukang Listrik",
-        "Tukang Batu",
-        "Tukang Kayu",
-        "Tukang Sol Sepatu",
-        "Tukang Las / Pandai Besi",
-        "Tukang Jahit",
-        "Penata Rambut",
-        "Penata Rias",
-        "Penata Busana",
-        "Mekanik",
-        "Tukang Gigi",
-        "Seniman",
-        "Tabib",
-        "Paraji",
-        "Perancang Busana",
-        "Penterjemah",
-        "Imam Masjid",
-        "Pendeta",
-        "Pastur",
-        "Wartawan",
-        "Ustadz / Mubaligh",
-        "Juru Masak",
-        "Promotor Acara",
-        "Anggota DPR-RI",
-        "Anggota DPD",
-        "Anggota BPK",
-        "Presiden",
-        "Wakil Presiden",
-        "Anggota Mahkamah Konstitusi",
-        "Anggota Kabinet / Kementerian",
-        "Duta Besar",
-        "Gubernur",
-        "Wakil Gubernur",
-        "Bupati",
-        "Wakil Bupati",
-        "Walikota",
-        "Wakil Walikota",
-        "Anggota DPRD Provinsi",
-        "Anggota DPRD Kabupaten / Kota",
-        "Dosen",
-        "Guru",
-        "Pilot",
-        "Pengacara",
-        "Notaris",
-        "Arsitek",
-        "Akuntan",
-        "Konsultan",
-        "Dokter",
-        "Bidan",
-        "Perawat",
-        "Apoteker",
-        "Psikiater / Psikolog",
-        "Penyiar Televisi",
-        "Penyiar Radio",
-        "Pelaut",
-        "Peneliti",
-        "Sopir",
-        "Pialang",
-        "Paranormal",
-        "Pedagang",
-        "Perangkat Desa",
-        "Kepala Desa",
-        "Biarawati",
-        "Wiraswasta",
-        "Anggota Lembaga Tinggi",
-        "Artis",
-        "Atlet",
-        "Chef",
-        "Manajer",
-        "Tenaga Tata Usaha",
-        "Operator",
-        "Pekerja Pengolahan, Kerajinan",
-        "Teknisi",
-        "Asisten Ahli",
-        "Lainnya"
-    ]
+export default function DataPribadiSection({ title, defaultData = null, onChange }: DataPribadi) {
+    const [dataPribadi, setDataPribadi] = useState<Partial<dataKeluargaProps>>({});
 
     useEffect(() => {
         console.log(dataPribadi)
@@ -181,12 +44,12 @@ export default function DataPribadiSection({ title, defaultData = defaultValue, 
     }, [dataPribadi, onChange])
 
     useEffect(() => {
-        if (dataPribadi.hubungan_keluarga !== 'Kepala Keluarga') {
+        if (dataPribadi.status !== 'Kepala Keluarga') {
             setDataPribadi(prev => ({
                 ...prev, email: null
             }))
         }
-    }, [dataPribadi.hubungan_keluarga])
+    }, [dataPribadi.status])
 
 
     return (
@@ -197,10 +60,10 @@ export default function DataPribadiSection({ title, defaultData = defaultValue, 
                     keyname="nama_lengkap"
                     name="Nama Lengkap"
                     placeholder="Masukkan nama"
-                    defaultValue={defaultData.nama}
+                    defaultValue={defaultData?.namaLengkap === undefined ? "" : defaultData.namaLengkap}
                     onChange={(data) => {
                         setDataPribadi(prep => ({
-                            ...prep, nama_lengkap: data
+                            ...prep, namaLengkap: data
                         }))
                     }}
                 />
@@ -208,20 +71,21 @@ export default function DataPribadiSection({ title, defaultData = defaultValue, 
                     getDropdownStatus={() => {}}
                     label="Hubungan Dalam Keluarga"
                     data={hubunganKeluarga}
-                    defaultData={defaultData.status}
+                    defaultData={defaultData?.status === undefined ? "" : defaultData.status}
                     placeholder="Pilih hubungan"
                     onChange={(data) => {
                         setDataPribadi(prep => ({
                             ...prep, 
-                            hubungan_keluarga: data,
+                            status: data,
                         }))
                     }}
                 />
-                {dataPribadi.hubungan_keluarga === 'Kepala Keluarga' &&
+                {(dataPribadi.status === 'Kepala Keluarga'  || defaultData?.status === "Kepala Keluarga")&&
                     <InputComponent
                         dataType={'email'}
                         name="Email"
                         keyname="email"
+                        defaultValue={defaultData?.email === undefined ? "" : defaultData.email}
                         placeholder="Masukkan email"
                         onChange={(data) => {
                             setDataPribadi(prev => ({
@@ -235,10 +99,10 @@ export default function DataPribadiSection({ title, defaultData = defaultValue, 
                     cols="grid-cols-2"
                     item={['Laki-laki', 'Perempuan']}
                     name="Jenis Kelamin"
-                    defaultItem={defaultData.jenis_kelamin}
+                    defaultItem={defaultData?.jenisKelamin === undefined ? "" : defaultData.jenisKelamin}
                     onChange={(data) => {
                         setDataPribadi(prep => ({
-                            ...prep, jenis_kelamin: data
+                            ...prep, jenisKelamin: data
                         }))
                     }}
                 />
@@ -246,7 +110,7 @@ export default function DataPribadiSection({ title, defaultData = defaultValue, 
                     cols="grid-cols-4"
                     item={['A', 'B', 'O', 'AB']}
                     name="Golongan Darah"
-                    defaultItem={isDataNull() ? "" : "B"}
+                    defaultItem={defaultData?.golonganDarah === undefined ? "": defaultData.golonganDarah}
                     onChange={(data) => {
                         setDataPribadi(prep => ({
                             ...prep, golongan_darah: data
@@ -256,21 +120,21 @@ export default function DataPribadiSection({ title, defaultData = defaultValue, 
                 <InputComponent
                     keyname="tempat_lahir"
                     name="Tempat Lahir"
-                    defaultValue={isDataNull() ? "" : "New York"}
+                    defaultValue={defaultData?.tempatLahir === undefined ? "" : defaultData.tempatLahir}
                     placeholder="Masukkan tempat lahir"
                     onChange={(data) => {
                         setDataPribadi(prep => ({
-                            ...prep, tempat_lahir: data
+                            ...prep, tempatLahir: data
                         }))
                     }}
                 />
                 <DatePickerComponent
                     getToggleStatus={() => {}}
                     label="Tanggal Lahir"
-                    defaultDate={isDataNull() ? "" : "1999-12-12"}
+                    defaultDate={defaultData?.tanggalLahir === undefined ? "" : convertDateToYYYYMMDD(defaultData.tanggalLahir)}
                     onChange={(data) => {
                         setDataPribadi(prep => ({
-                            ...prep, tanggal_lahir: data
+                            ...prep, tanggalLahir: data
                         }))
                     }}
                 />
@@ -278,7 +142,7 @@ export default function DataPribadiSection({ title, defaultData = defaultValue, 
                     getDropdownStatus={() => {}}
                     label="Agama"
                     data={['Hindu', 'Islam', 'Kristen', 'Katholik', 'Buddha', 'Konghucu']}
-                    defaultData={isDataNull() ? "" : "Hindu"}
+                    defaultData={defaultData?.agama === undefined ? "" : defaultData.agama}
                     placeholder="Pilih agama"
                     onChange={(data) => {
                         setDataPribadi(prep => ({
@@ -290,7 +154,7 @@ export default function DataPribadiSection({ title, defaultData = defaultValue, 
                     cols="grid-cols-2"
                     item={['WNI', 'WNA']}
                     name="Kewarganegaraan"
-                    defaultItem={isDataNull() ? "" : "WNI"}
+                    defaultItem={defaultData?.kewarganegaraan === undefined ? "" : defaultData.kewarganegaraan}
                     onChange={(data) => {
                         setDataPribadi(prep => ({
                             ...prep, kewarganegaraan: data
@@ -301,11 +165,11 @@ export default function DataPribadiSection({ title, defaultData = defaultValue, 
                     getDropdownStatus={() => {}}
                     label="Pendidikan Terakhir"
                     data={pendidikanList}
-                    defaultData={isDataNull() ? "" : "D4/S1"}
+                    defaultData={defaultData?.pendidikanTerakhir == undefined ? "" : defaultData.pendidikanTerakhir}
                     placeholder="Pilih jenis pendidikan"
                     onChange={(data) => {
                         setDataPribadi(prep => ({
-                            ...prep, pendidikan_terakhir: data
+                            ...prep, pendidikanTerakhir: data
                         }))
                     }}
                 />
@@ -313,7 +177,7 @@ export default function DataPribadiSection({ title, defaultData = defaultValue, 
                     getDropdownStatus={() => {}}
                     label="Pekerjaan"
                     data={pilihan_pekerjaan_kk}
-                    defaultData={isDataNull() ? "" : "Pelajar / Mahasiswa"}
+                    defaultData={defaultData?.pekerjaan === undefined ? "" : defaultData.pekerjaan}
                     placeholder="Pilih jenis pekerjaan"
                     onChange={(data) => {
                         setDataPribadi(prep => ({
