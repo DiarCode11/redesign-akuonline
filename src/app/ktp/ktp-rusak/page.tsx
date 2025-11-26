@@ -15,8 +15,8 @@ import { SubmitDataHelper } from "@/helper/submitDataHelper";
 import Alert from "@/components/alert";
 import { useRouter } from "next/navigation";
 
-type dataKtpRusakProps = {
-    NoKk: string,
+export type dataKtpRusakProps = {
+    NoKtp: string,
 }
 
 export default function KTP_Rusak() {
@@ -62,7 +62,7 @@ export default function KTP_Rusak() {
                 userId: auth.id,
                 userName: auth.name,
                 serviceType: "KTP",
-                serviceName: "Pembuatan Data KTP",
+                serviceName: "Kerusakan KTP",
                 description: "Pengajuan pembuatan data KTP karena rusak",
                 createdAt: new Date(),
                 data: dataKtp
@@ -116,7 +116,7 @@ export default function KTP_Rusak() {
                             dataType="number"
                             onChange={(data) => {
                                 setDataKtp((prev) => ({
-                                    ...prev, NoKk: data
+                                    ...prev, NoKtp: data
                                 }))
                             }}
                             placeholder="Masukkan nomor KTP"
