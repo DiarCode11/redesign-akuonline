@@ -12,6 +12,18 @@ import { UpdateDataHelper } from "@/helper/updateDataHelper";
 import Alert from "@/components/alert";
 import { KkHilangProps } from "@/app/kk/kk-hilang/page";
 import KkHilangUpdateView from "./kkHilang_UpdateView";
+import KkRusakUpdateView from "./kkRusak_UpdateView";
+import AddKtpUpdateView from "./addKtp_UpdateView";
+import KtpHilangUpdateView from "./ktpHilang_UpdateView";
+import KtpRusakUpdateView from "./ktpRusak_UpdateView";
+import { dataKtpRusakProps } from "@/app/ktp/ktp-rusak/page";
+import EditKkUpdateView from "./editKk_UpdateView";
+import EditKtpUpdateView from "./editKtp_UpdateView";
+import AddAktaUpdateView from "./addAkta_UpdateView";
+import EditAktaUpdateView from "./editAkta_UpdateView";
+import { PerubahanKewarganegaraanForm } from "@/components/akta-component/akta-form";
+import PerubahanKewarganegaraanUpdateView from "./perubahanKewarganegaraan_UpdateView";
+import AktaRusakUpdateView from "./aktaRusak_UpdateView";
 
 export default function UbahPengajuan() {
     const params = useParams();
@@ -19,6 +31,8 @@ export default function UbahPengajuan() {
     const id = params?.id
     const [dataKk, setDataKk] = useState<dataKKProps | null>(null)
     const [dataKkHilang, setDataKkHilang] = useState<KkHilangProps | null>(null)
+    const [dataKtpHilang, setDataKtpHilang] = useState<KkHilangProps | null>(null)
+    const [dataKtpRusak, setDataKtpRusak] = useState<dataKtpRusakProps | null>(null)
     const [detailPengajuan, setDetailPengajuan] = useState<ServiceProps>(null)
     const [showAlert, setShowAlert] = useState<boolean>(false)
     const [serviceType, setServiceType] = useState<string | null>(null);
@@ -38,6 +52,12 @@ export default function UbahPengajuan() {
                             break;
                         case "Kehilangan Kartu Keluarga":
                             setDataKkHilang(detailPengajuan.data);
+                            break;
+                        case "Kehilangan KTP":
+                            setDataKtpHilang(detailPengajuan.data);
+                            break;
+                        case "Kerusakan KTP":
+                            setDataKtpRusak(detailPengajuan.data)
                             break;
                     }
                 }
@@ -90,12 +110,46 @@ export default function UbahPengajuan() {
                         </Link>
                         <h1 className="font-semibold text-xl">Ubah Pengajuan {detailPengajuan.serviceName}</h1>
                     </div>
-                    {/*  */}
+                    {/* KARTU KELUARGA */}
                     { detailPengajuan?.serviceName === "Buat Kartu Keluarga" && (
                         <AddKkUpdateView defaultData={dataKk} onDataChange={handleCallback} />
                     ) }
+                    { detailPengajuan?.serviceName === "Perubahan Kartu Keluarga" && (
+                        <EditKkUpdateView />
+                    ) }
                     { detailPengajuan?.serviceName === "Kehilangan Kartu Keluarga" && (
                         <KkHilangUpdateView defaultData={dataKkHilang} onDataChange={handleCallback} />
+                    ) }
+                    { detailPengajuan?.serviceName === "Kartu Keluarga Rusak" && (
+                        <KkRusakUpdateView />
+                    ) }
+
+                    {/* KTP */}
+                    { detailPengajuan?.serviceName === "Buat KTP" && (
+                        <AddKtpUpdateView />
+                    ) }
+                    { detailPengajuan?.serviceName === "BPerubahan Data KTP" && (
+                        <EditKtpUpdateView />
+                    ) }
+                    { detailPengajuan?.serviceName === "Kehilangan KTP" && (
+                        <KtpHilangUpdateView defaultData={dataKtpHilang} onDataChange={handleCallback} />
+                    ) }
+                    { detailPengajuan?.serviceName === "Kerusakan KTP" && (
+                        <KtpRusakUpdateView defaultData={dataKtpRusak} onDataChange={handleCallback} />
+                    ) }
+
+                    {/* AKTA */}
+                    { detailPengajuan?.serviceName.startsWith("Pembuatan Akta") && !detailPengajuan?.serviceName.startsWith("Pembuatan Akta karena rusak") && (
+                        <AddAktaUpdateView />
+                    ) }
+                    { detailPengajuan?.serviceName.startsWith("Perubahan Data Akta") && (
+                        <EditAktaUpdateView />
+                    ) }
+                    { detailPengajuan?.serviceName.startsWith("Perubahan Kewarganegaraan") && (
+                        <PerubahanKewarganegaraanUpdateView />
+                    ) }
+                    { detailPengajuan?.serviceName.startsWith("Pembuatan Akta karena rusak") && (
+                        <AktaRusakUpdateView />
                     ) }
 
                     <div className="flex justify-end">
