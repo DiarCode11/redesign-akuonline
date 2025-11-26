@@ -262,7 +262,7 @@ export default function NewKK() {
     return (
         <div>
              {/* Alert */}
-            <Alert title="Berhasil membuat pengajuan" isShow={true} onClose={(data) => setShowAlert(false)} prefixIcon={<CircleAlertIcon className="text-green-800" />} />
+            <Alert title="Berhasil membuat pengajuan" isShow={showAlert} onClose={(data) => setShowAlert(false)} prefixIcon={<CircleAlertIcon className="text-green-800" />} />
 
             <Modal title="Hapus record" width="w-[400px]" height="h-[100px]" isOpen={isDelConfirmModalOpen} onClose={() => setDelConfirmModalOpen(false)}>
                 <div className="text-center py-3">

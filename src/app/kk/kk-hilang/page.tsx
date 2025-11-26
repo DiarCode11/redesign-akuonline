@@ -15,7 +15,7 @@ import { SubmitDataHelper } from "@/helper/submitDataHelper";
 import Alert from "@/components/alert";
 import { useRouter } from "next/navigation";
 
-type KkHilangProps = {
+export type KkHilangProps = {
     NoKtpPemohon: string,
     TanggalKehilangan: string
 }

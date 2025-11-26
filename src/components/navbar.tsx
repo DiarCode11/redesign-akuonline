@@ -34,7 +34,9 @@ export default function Navbar() {
                 console.log("Response riwayat pengajuan: ", result);
                 if (response.ok) {
                     const jsonList = result.data as ServiceProps[];
-                    setSubmissionHistory(jsonList);
+                    setSubmissionHistory(
+                        jsonList.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                    );
                     console.log(jsonList);
                 } else {
                     console.log(result);

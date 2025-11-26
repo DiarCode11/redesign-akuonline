@@ -3,7 +3,7 @@ type EditKkUpdateViewProps = {
     onDataChange: (data: any) => void
 }
 
-export default function editKkUpdateView({ defaultData, onDataChange } : EditKkUpdateViewProps) {
+export default function EditKkUpdateView({ defaultData, onDataChange } : EditKkUpdateViewProps) {
     return (
         <>
         </>
